@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Become a Vendor — ProGuides Store</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --teal: #1B3A4B;
+  --teal-light: #254f66;
+  --teal-dark: #112533;
+  --lime: #A8D832;
+  --lime-dark: #8ab828;
+  --lavender: #C4B5F4;
+  --lavender-light: #ede9fd;
+  --white: #ffffff;
+  --off: #f7f8fa;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+  --error: #ef4444;
+  --success: #22c55e;
+  --radius: 12px;
+  --shadow: 0 4px 24px rgba(27,58,75,0.10);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--off);
+  color: var(--teal);
+  min-height: 100vh;
+}
+
+/* NAV */
+nav {
+  background: var(--teal);
+  padding: 16px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nav-logo {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 20px;
+  color: var(--lime);
+  text-decoration: none;
+  letter-spacing: -0.5px;
+}
+.nav-logo span { color: var(--white); }
+.nav-link {
+  font-size: 14px;
+  color: rgba(255,255,255,0.7);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-link:hover { color: var(--lime); }
+
+/* HERO STRIP */
+.hero {
+  background: linear-gradient(135deg, var(--teal-dark) 0%, var(--teal) 60%, #1e4d62 100%);
+  padding: 48px 32px 56px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 300px; height: 300px;
+  background: var(--lime);
+  opacity: 0.04;
+  border-radius: 50%;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -80px; left: -40px;
+  width: 240px; height: 240px;
+  background: var(--lavender);
+  opacity: 0.06;
+  border-radius: 50%;
+}
+.hero-badge {
+  display: inline-block;
+  background: rgba(168,216,50,0.15);
+  border: 1px solid rgba(168,216,50,0.3);
+  color: var(--lime);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 6px 16px;
+  border-radius: 100px;
+  margin-bottom: 20px;
+}
+.hero h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(28px, 5vw, 42px);
+  font-weight: 800;
+  color: var(--white);
+  line-height: 1.15;
+  margin-bottom: 14px;
+}
+.hero h1 span { color: var(--lime); }
+.hero p {
+  color: rgba(255,255,255,0.65);
+  font-size: 16px;
+  max-width: 480px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* BENEFITS ROW */
+.benefits {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 20px 32px 0;
+  background: var(--teal-dark);
+  padding-bottom: 0;
+}
+.benefit-pill {
+  background: rgba(196,181,244,0.12);
+  border: 1px solid rgba(196,181,244,0.2);
+  color: var(--lavender);
+  font-size: 13px;
+  padding: 8px 18px;
+  border-radius: 100px;
+  margin-bottom: -1px;
+}
+
+/* MAIN LAYOUT */
+.main {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 40px 20px 80px;
+}
+
+/* PROGRESS STEPS */
+.steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin-bottom: 36px;
+}
+.step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.step-num {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 600;
+  background: var(--border);
+  color: var(--muted);
+  transition: all 0.3s;
+  flex-shrink: 0;
+}
+.step.active .step-num {
+  background: var(--teal);
+  color: var(--lime);
+}
+.step.done .step-num {
+  background: var(--lime);
+  color: var(--teal);
+}
+.step-label {
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.step.active .step-label { color: var(--teal); font-weight: 600; }
+.step-line {
+  width: 40px; height: 2px;
+  background: var(--border);
+  flex-shrink: 0;
+  margin: 0 4px;
+}
+
+/* FORM CARD */
+.form-card {
+  background: var(--white);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.form-section {
+  display: none;
+  padding: 40px;
+}
+.form-section.active { display: block; }
+
+.section-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--teal);
+  margin-bottom: 6px;
+}
+.section-sub {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 32px;
+  line-height: 1.5;
+}
+
+/* FORM GRID */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.form-grid.full { grid-template-columns: 1fr; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field.span2 { grid-column: span 2; }
+
+label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--teal);
+  letter-spacing: 0.1px;
+}
+label .req { color: var(--lime-dark); }
+
+input, select, textarea {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  padding: 12px 16px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--teal);
+  background: var(--white);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+  width: 100%;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px rgba(27,58,75,0.08);
+}
+input.error, select.error, textarea.error {
+  border-color: var(--error);
+}
+textarea { resize: vertical; min-height: 90px; }
+
+.field-hint {
+  font-size: 12px;
+  color: var(--muted);
+}
+.field-error {
+  font-size: 12px;
+  color: var(--error);
+  display: none;
+}
+.field-error.show { display: block; }
+
+/* SLUG PREVIEW */
+.slug-preview {
+  font-size: 12px;
+  color: var(--teal-light);
+  background: var(--off);
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin-top: 4px;
+}
+.slug-preview span { color: var(--lime-dark); font-weight: 600; }
+
+/* PASSWORD STRENGTH */
+.pw-strength {
+  display: flex;
+  gap: 4px;
+  margin-top: 6px;
+}
+.pw-bar {
+  height: 3px;
+  flex: 1;
+  border-radius: 2px;
+  background: var(--border);
+  transition: background 0.3s;
+}
+.pw-bar.weak { background: var(--error); }
+.pw-bar.medium { background: #f59e0b; }
+.pw-bar.strong { background: var(--success); }
+.pw-text { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+/* CATEGORY PILLS */
+.category-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.cat-pill {
+  padding: 8px 16px;
+  border-radius: 100px;
+  border: 1.5px solid var(--border);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--white);
+  user-select: none;
+}
+.cat-pill:hover { border-color: var(--teal); color: var(--teal); }
+.cat-pill.selected {
+  background: var(--teal);
+  border-color: var(--teal);
+  color: var(--lime);
+}
+
+/* TERMS */
+.terms-box {
+  background: var(--off);
+  border-radius: var(--radius);
+  padding: 20px;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-bottom: 20px;
+  max-height: 140px;
+  overflow-y: auto;
+}
+.checkbox-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--teal);
+  cursor: pointer;
+}
+.checkbox-row input[type="checkbox"] {
+  width: 18px; height: 18px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  accent-color: var(--teal);
+}
+
+/* NAV BUTTONS */
+.form-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 36px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+.btn {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 13px 28px;
+  border-radius: var(--radius);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-primary {
+  background: var(--teal);
+  color: var(--lime);
+}
+.btn-primary:hover { background: var(--teal-light); transform: translateY(-1px); }
+.btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.btn-outline {
+  background: transparent;
+  color: var(--muted);
+  border: 1.5px solid var(--border);
+}
+.btn-outline:hover { border-color: var(--teal); color: var(--teal); }
+.btn-ghost { background: transparent; color: var(--muted); font-size: 14px; padding: 8px; }
+
+/* SUCCESS STATE */
+.success-screen {
+  display: none;
+  text-align: center;
+  padding: 60px 40px;
+}
+.success-screen.show { display: block; }
+.success-icon {
+  width: 80px; height: 80px;
+  background: linear-gradient(135deg, var(--lime) 0%, var(--lime-dark) 100%);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 24px;
+  font-size: 36px;
+}
+.success-screen h2 {
+  font-family: 'Syne', sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--teal);
+  margin-bottom: 12px;
+}
+.success-screen p {
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.6;
+  max-width: 400px;
+  margin: 0 auto 32px;
+}
+.next-steps {
+  background: var(--off);
+  border-radius: var(--radius);
+  padding: 24px;
+  text-align: left;
+  max-width: 400px;
+  margin: 0 auto 32px;
+}
+.next-steps h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--teal);
+  margin-bottom: 14px;
+}
+.next-step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.next-step-dot {
+  width: 20px; height: 20px;
+  background: var(--teal);
+  color: var(--lime);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ALERT */
+.alert {
+  padding: 14px 18px;
+  border-radius: var(--radius);
+  font-size: 14px;
+  margin-bottom: 24px;
+  display: none;
+}
+.alert.show { display: block; }
+.alert-error { background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; }
+.alert-success { background: #f0fdf4; border: 1px solid #bbf7d0; color: #16a34a; }
+
+/* DIVIDER */
+.section-divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 28px 0;
+}
+
+/* LOADING SPINNER */
+.spinner {
+  width: 18px; height: 18px;
+  border: 2px solid rgba(168,216,50,0.3);
+  border-top-color: var(--lime);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: none;
+}
+.spinner.show { display: inline-block; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 600px) {
+  .form-grid { grid-template-columns: 1fr; }
+  .field.span2 { grid-column: span 1; }
+  .form-section { padding: 28px 20px; }
+  .hero { padding: 36px 20px 44px; }
+  .step-label { display: none; }
+  .step-line { width: 24px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="../index.html" class="nav-logo">Pro<span>Guides</span> Store</a>
+  <a href="login.html" class="nav-link">Already a vendor? Log in →</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge">Vendor Application</div>
+  <h1>Sell on <span>ProGuides Store</span></h1>
+  <p>Join Nigeria's growing multi-vendor marketplace. Set up your store in minutes and start selling today.</p>
+</div>
+<div style="background:var(--teal-dark); padding:0 32px 32px; display:flex; gap:12px; flex-wrap:wrap; justify-content:center;">
+  <div class="benefit-pill">✦ Zero setup fee</div>
+  <div class="benefit-pill">✦ Paystack payments</div>
+  <div class="benefit-pill">✦ WhatsApp order alerts</div>
+  <div class="benefit-pill">✦ Your own store link</div>
+</div>
+
+<div class="main">
+
+  <!-- PROGRESS STEPS -->
+  <div class="steps">
+    <div class="step active" id="step-dot-1">
+      <div class="step-num">1</div>
+      <div class="step-label">Account</div>
+    </div>
+    <div class="step-line"></div>
+    <div class="step" id="step-dot-2">
+      <div class="step-num">2</div>
+      <div class="step-label">Store Info</div>
+    </div>
+    <div class="step-line"></div>
+    <div class="step" id="step-dot-3">
+      <div class="step-num">3</div>
+      <div class="step-label">Business</div>
+    </div>
+    <div class="step-line"></div>
+    <div class="step" id="step-dot-4">
+      <div class="step-num">4</div>
+      <div class="step-label">Confirm</div>
+    </div>
+  </div>
+
+  <div class="form-card">
+
+    <!-- ALERT -->
+    <div id="alert" class="alert" style="margin:20px 20px 0;"></div>
+
+    <!-- SECTION 1: ACCOUNT -->
+    <div class="form-section active" id="section-1">
+      <div class="section-title">Create your account</div>
+      <div class="section-sub">You'll use this email and password to log into your vendor dashboard.</div>
+
+      <div class="form-grid">
+        <div class="field">
+          <label>Full name <span class="req">*</span></label>
+          <input type="text" id="full_name" placeholder="e.g. Amaka Okonkwo"/>
+          <div class="field-error" id="err-full_name">Please enter your full name</div>
+        </div>
+        <div class="field">
+          <label>Phone number <span class="req">*</span></label>
+          <input type="tel" id="phone" placeholder="e.g. 08012345678"/>
+          <div class="field-error" id="err-phone">Please enter a valid phone number</div>
+        </div>
+        <div class="field span2">
+          <label>Email address <span class="req">*</span></label>
+          <input type="email" id="email" placeholder="yourname@email.com"/>
+          <div class="field-error" id="err-email">Please enter a valid email address</div>
+        </div>
+        <div class="field">
+          <label>Password <span class="req">*</span></label>
+          <input type="password" id="password" placeholder="Min. 8 characters" oninput="checkPassword(this.value)"/>
+          <div class="pw-strength">
+            <div class="pw-bar" id="pw-bar-1"></div>
+            <div class="pw-bar" id="pw-bar-2"></div>
+            <div class="pw-bar" id="pw-bar-3"></div>
+            <div class="pw-bar" id="pw-bar-4"></div>
+          </div>
+          <div class="pw-text" id="pw-text">Enter a password</div>
+          <div class="field-error" id="err-password">Password must be at least 8 characters</div>
+        </div>
+        <div class="field">
+          <label>Confirm password <span class="req">*</span></label>
+          <input type="password" id="confirm_password" placeholder="Repeat your password"/>
+          <div class="field-error" id="err-confirm_password">Passwords do not match</div>
+        </div>
+        <div class="field span2">
+          <label>WhatsApp number</label>
+          <input type="tel" id="whatsapp" placeholder="Same as phone or different WhatsApp number"/>
+          <div class="field-hint">Customers will contact you via WhatsApp for orders</div>
+        </div>
+      </div>
+
+      <div class="form-nav">
+        <span></span>
+        <button class="btn btn-primary" onclick="goToStep(2)">
+          Continue <span>→</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- SECTION 2: STORE INFO -->
+    <div class="form-section" id="section-2">
+      <div class="section-title">Set up your store</div>
+      <div class="section-sub">This is how customers will find and recognise your store on ProGuides.</div>
+
+      <div class="form-grid">
+        <div class="field span2">
+          <label>Store name <span class="req">*</span></label>
+          <input type="text" id="store_name" placeholder="e.g. Amazing Wear" oninput="generateSlug(this.value)"/>
+          <div class="slug-preview" id="slug-preview">Your store link: store.proguides.world/<span id="slug-display">your-store</span></div>
+          <div class="field-error" id="err-store_name">Please enter your store name</div>
+        </div>
+        <div class="field span2">
+          <label>Store description <span class="req">*</span></label>
+          <textarea id="store_description" placeholder="Tell customers what you sell and what makes your store special..."></textarea>
+          <div class="field-hint">Keep it short and clear — 1 or 2 sentences works best</div>
+          <div class="field-error" id="err-store_description">Please describe your store</div>
+        </div>
+      </div>
+
+      <hr class="section-divider"/>
+      <div style="font-size:14px; font-weight:600; color:var(--teal); margin-bottom:16px;">What do you sell? <span class="req">*</span></div>
+      <div class="category-grid" id="category-grid">
+        <div class="cat-pill" onclick="toggleCategory(this)" data-val="Fashion & Clothing">👗 Fashion & Clothing</div>
+        <div class="cat-pill" onclick="toggleCategory(this)" data-val="Shoes & Footwear">👟 Shoes & Footwear</div>
+        <div class="cat-pill" onclick="toggleCategory(this)" data-val="Bags & Accessories">👜 Bags & Accessories</div>
+        <div class="cat-pill" onclick="toggleCategory(this)" data-val="Beauty & Skincare">💄 Beauty & Skincare</div>
+        <div class="cat-pill" onclick="toggleCategory(this)" data-val="Electronics">📱 Electronics</div>
+        <div class="cat-pill" onclick="toggleCategory(this)" data-val="Home & Kitchen">🏠 Home & Kitchen</div>
+        <div class="cat-pill" onclick="toggleCategory(this)" data-val="Food & Groceries">🛒 Food & Groceries</div>
+        <div class="cat-pill" onclick="toggleCategory(this)" data-val="Health & Wellness">💊 Health & Wellness</div>
+        <div class="cat-pill" onclick="toggleCategory(this)" data-val="Kids & Baby">🧸 Kids & Baby</div>
+        <div class="cat-pill" onclick="toggleCategory(this)" data-val="Digital Products">💾 Digital Products</div>
+        <div class="cat-pill" onclick="toggleCategory(this)" data-val="Other">📦 Other</div>
+      </div>
+      <div class="field-error show" id="err-category" style="display:none; margin-top:8px;">Please select at least one category</div>
+
+      <div class="form-nav">
+        <button class="btn btn-outline" onclick="goToStep(1)">← Back</button>
+        <button class="btn btn-primary" onclick="goToStep(3)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- SECTION 3: BUSINESS / BANK DETAILS -->
+    <div class="form-section" id="section-3">
+      <div class="section-title">Bank details</div>
+      <div class="section-sub">We need this to process your payouts after sales. Your details are kept private.</div>
+
+      <div class="form-grid">
+        <div class="field span2">
+          <label>Bank name <span class="req">*</span></label>
+          <select id="bank_name">
+            <option value="">Select your bank</option>
+            <option>Access Bank</option>
+            <option>First Bank</option>
+            <option>GTBank</option>
+            <option>UBA</option>
+            <option>Zenith Bank</option>
+            <option>Kuda Bank</option>
+            <option>Opay</option>
+            <option>Palmpay</option>
+            <option>Moniepoint</option>
+            <option>Sterling Bank</option>
+            <option>Stanbic IBTC</option>
+            <option>FCMB</option>
+            <option>Fidelity Bank</option>
+            <option>Union Bank</option>
+            <option>Wema Bank</option>
+            <option>Polaris Bank</option>
+            <option>Other</option>
+          </select>
+          <div class="field-error" id="err-bank_name">Please select your bank</div>
+        </div>
+        <div class="field">
+          <label>Account number <span class="req">*</span></label>
+          <input type="text" id="account_number" placeholder="10-digit account number" maxlength="10"/>
+          <div class="field-error" id="err-account_number">Please enter a valid 10-digit account number</div>
+        </div>
+        <div class="field">
+          <label>Account name <span class="req">*</span></label>
+          <input type="text" id="account_name" placeholder="Name on your bank account"/>
+          <div class="field-error" id="err-account_name">Please enter your account name</div>
+        </div>
+      </div>
+
+      <div class="form-nav">
+        <button class="btn btn-outline" onclick="goToStep(2)">← Back</button>
+        <button class="btn btn-primary" onclick="goToStep(4)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- SECTION 4: CONFIRM & TERMS -->
+    <div class="form-section" id="section-4">
+      <div class="section-title">Almost done!</div>
+      <div class="section-sub">Review the vendor terms and submit your application.</div>
+
+      <!-- Summary -->
+      <div style="background:var(--off); border-radius:var(--radius); padding:20px; margin-bottom:24px;">
+        <div style="font-size:13px; font-weight:600; color:var(--teal); margin-bottom:12px; text-transform:uppercase; letter-spacing:0.5px;">Your application summary</div>
+        <div style="display:grid; gap:8px;">
+          <div style="display:flex; justify-content:space-between; font-size:14px;">
+            <span style="color:var(--muted);">Name</span>
+            <span id="summary-name" style="font-weight:500;"></span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:14px;">
+            <span style="color:var(--muted);">Email</span>
+            <span id="summary-email" style="font-weight:500;"></span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:14px;">
+            <span style="color:var(--muted);">Store name</span>
+            <span id="summary-store" style="font-weight:500;"></span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:14px;">
+            <span style="color:var(--muted);">Store link</span>
+            <span id="summary-slug" style="font-weight:500; color:var(--lime-dark);"></span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:14px;">
+            <span style="color:var(--muted);">Bank</span>
+            <span id="summary-bank" style="font-weight:500;"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="terms-box">
+        <strong>ProGuides Store Vendor Terms</strong><br/><br/>
+        1. ProGuides Store charges a 5% platform fee on every successful sale.<br/>
+        2. Payouts are processed within 3–5 business days after order delivery confirmation.<br/>
+        3. Vendors are responsible for the accuracy of product descriptions and images.<br/>
+        4. Counterfeit, illegal, or prohibited products will result in immediate account suspension.<br/>
+        5. Vendors must fulfil orders within the agreed delivery timeframe.<br/>
+        6. ProGuides reserves the right to approve or reject vendor applications.<br/>
+        7. Vendors must maintain accurate bank details for payout processing.<br/>
+        8. All disputes will be handled through the ProGuides support team.<br/>
+        9. By signing up, you agree to be contacted via WhatsApp for order notifications.
+      </div>
+
+      <label class="checkbox-row" style="margin-bottom:20px;">
+        <input type="checkbox" id="agree_terms"/>
+        <span>I have read and agree to the <strong>ProGuides Vendor Terms</strong> and <strong>Privacy Policy</strong></span>
+      </label>
+
+      <label class="checkbox-row">
+        <input type="checkbox" id="agree_accurate"/>
+        <span>I confirm that all information I have provided is accurate and correct</span>
+      </label>
+
+      <div class="form-nav">
+        <button class="btn btn-outline" onclick="goToStep(3)">← Back</button>
+        <button class="btn btn-primary" id="submit-btn" onclick="submitSignup()">
+          <div class="spinner" id="submit-spinner"></div>
+          <span id="submit-text">Submit Application</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- SUCCESS SCREEN -->
+    <div class="success-screen" id="success-screen">
+      <div class="success-icon">🎉</div>
+      <h2>Application Submitted!</h2>
+      <p>Welcome to ProGuides Store, <strong id="success-name"></strong>. Your vendor account has been created. Check your email to verify your account.</p>
+      <div class="next-steps">
+        <h4>What happens next?</h4>
+        <div class="next-step-item">
+          <div class="next-step-dot">1</div>
+          <span>Check your email and click the verification link from Supabase</span>
+        </div>
+        <div class="next-step-item">
+          <div class="next-step-dot">2</div>
+          <span>Log into your vendor dashboard to upload your first products</span>
+        </div>
+        <div class="next-step-item">
+          <div class="next-step-dot">3</div>
+          <span>Share your store link and start receiving orders</span>
+        </div>
+      </div>
+      <a href="login.html" class="btn btn-primary" style="text-decoration:none;">Go to Login →</a>
+    </div>
+
+  </div>
+</div>
+
+<!-- SUPABASE -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://jomsflisyeohejfrvxnf.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpvbXNmbGlzeWVvaGVqZnJ2eG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2MTY5MTIsImV4cCI6MjA5NjE5MjkxMn0.qaC_PbEIfHJq4ae9gRJxcUV-fgwrXTMEldO6yj66KNY';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let currentStep = 1;
+let selectedCategories = [];
+
+function showAlert(msg, type='error') {
+  const el = document.getElementById('alert');
+  el.textContent = msg;
+  el.className = `alert alert-${type} show`;
+  el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  setTimeout(() => el.classList.remove('show'), 5000);
+}
+
+function generateSlug(name) {
+  const slug = name.toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-');
+  document.getElementById('slug-display').textContent = slug || 'your-store';
+  return slug;
+}
+
+function toggleCategory(el) {
+  const val = el.dataset.val;
+  if (el.classList.contains('selected')) {
+    el.classList.remove('selected');
+    selectedCategories = selectedCategories.filter(c => c !== val);
+  } else {
+    el.classList.add('selected');
+    selectedCategories.push(val);
+  }
+}
+
+function checkPassword(val) {
+  const bars = [1,2,3,4].map(i => document.getElementById(`pw-bar-${i}`));
+  const txt = document.getElementById('pw-text');
+  bars.forEach(b => b.className = 'pw-bar');
+  if (!val) { txt.textContent = 'Enter a password'; return; }
+  let score = 0;
+  if (val.length >= 8) score++;
+  if (/[A-Z]/.test(val)) score++;
+  if (/[0-9]/.test(val)) score++;
+  if (/[^A-Za-z0-9]/.test(val)) score++;
+  const labels = ['', 'Weak', 'Fair', 'Good', 'Strong'];
+  const cls = score <= 1 ? 'weak' : score <= 2 ? 'medium' : 'strong';
+  for (let i = 0; i < score; i++) bars[i].classList.add(cls);
+  txt.textContent = labels[score] || '';
+  txt.style.color = cls === 'weak' ? 'var(--error)' : cls === 'medium' ? '#f59e0b' : 'var(--success)';
+}
+
+function validateStep(step) {
+  let valid = true;
+  const required = {
+    1: ['full_name', 'phone', 'email', 'password', 'confirm_password'],
+    2: ['store_name', 'store_description'],
+    3: ['bank_name', 'account_number', 'account_name'],
+  };
+  if (required[step]) {
+    required[step].forEach(id => {
+      const el = document.getElementById(id);
+      const err = document.getElementById(`err-${id}`);
+      if (!el.value.trim()) {
+        el.classList.add('error');
+        if (err) err.classList.add('show');
+        valid = false;
+      } else {
+        el.classList.remove('error');
+        if (err) err.classList.remove('show');
+      }
+    });
+  }
+  if (step === 1) {
+    const pw = document.getElementById('password').value;
+    const cpw = document.getElementById('confirm_password').value;
+    if (pw.length < 8) {
+      document.getElementById('password').classList.add('error');
+      document.getElementById('err-password').classList.add('show');
+      valid = false;
+    }
+    if (pw !== cpw) {
+      document.getElementById('confirm_password').classList.add('error');
+      document.getElementById('err-confirm_password').classList.add('show');
+      valid = false;
+    }
+    const email = document.getElementById('email').value;
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      document.getElementById('email').classList.add('error');
+      document.getElementById('err-email').classList.add('show');
+      valid = false;
+    }
+  }
+  if (step === 2) {
+    if (selectedCategories.length === 0) {
+      document.getElementById('err-category').style.display = 'block';
+      valid = false;
+    } else {
+      document.getElementById('err-category').style.display = 'none';
+    }
+    const acct = document.getElementById('account_number');
+    if (acct && acct.value && !/^\d{10}$/.test(acct.value)) {
+      acct.classList.add('error');
+      document.getElementById('err-account_number').classList.add('show');
+      valid = false;
+    }
+  }
+  if (step === 3) {
+    const acct = document.getElementById('account_number');
+    if (!/^\d{10}$/.test(acct.value)) {
+      acct.classList.add('error');
+      document.getElementById('err-account_number').classList.add('show');
+      valid = false;
+    }
+  }
+  return valid;
+}
+
+function updateSummary() {
+  document.getElementById('summary-name').textContent = document.getElementById('full_name').value;
+  document.getElementById('summary-email').textContent = document.getElementById('email').value;
+  document.getElementById('summary-store').textContent = document.getElementById('store_name').value;
+  document.getElementById('summary-slug').textContent = `store.proguides.world/${generateSlug(document.getElementById('store_name').value)}`;
+  document.getElementById('summary-bank').textContent = `${document.getElementById('bank_name').value} — ${document.getElementById('account_number').value}`;
+}
+
+function goToStep(step) {
+  if (step > currentStep && !validateStep(currentStep)) return;
+  document.getElementById(`section-${currentStep}`).classList.remove('active');
+  document.getElementById(`step-dot-${currentStep}`).classList.remove('active');
+  document.getElementById(`step-dot-${currentStep}`).classList.add('done');
+  currentStep = step;
+  document.getElementById(`section-${step}`).classList.add('active');
+  document.getElementById(`step-dot-${step}`).classList.add('active');
+  document.getElementById(`step-dot-${step}`).classList.remove('done');
+  if (step === 4) updateSummary();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+async function submitSignup() {
+  if (!document.getElementById('agree_terms').checked) {
+    showAlert('Please agree to the vendor terms to continue.');
+    return;
+  }
+  if (!document.getElementById('agree_accurate').checked) {
+    showAlert('Please confirm your information is accurate.');
+    return;
+  }
+
+  const btn = document.getElementById('submit-btn');
+  const spinner = document.getElementById('submit-spinner');
+  const btnText = document.getElementById('submit-text');
+  btn.disabled = true;
+  spinner.classList.add('show');
+  btnText.textContent = 'Creating your account...';
+
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  const storeName = document.getElementById('store_name').value.trim();
+  const storeSlug = generateSlug(storeName);
+
+  try {
+    // 1. Create auth account
+    const { data: authData, error: authError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { full_name: document.getElementById('full_name').value.trim() }
+      }
+    });
+
+    if (authError) throw authError;
+
+    // 2. Insert vendor record
+    const { error: vendorError } = await supabase.from('vendors').insert({
+      id: authData.user.id,
+      email,
+      full_name: document.getElementById('full_name').value.trim(),
+      store_name: storeName,
+      store_slug: storeSlug,
+      phone: document.getElementById('phone').value.trim(),
+      whatsapp: document.getElementById('whatsapp').value.trim() || document.getElementById('phone').value.trim(),
+      store_description: document.getElementById('store_description').value.trim(),
+      bank_name: document.getElementById('bank_name').value,
+      account_number: document.getElementById('account_number').value.trim(),
+      account_name: document.getElementById('account_name').value.trim(),
+    });
+
+    if (vendorError) throw vendorError;
+
+    // SUCCESS
+    document.querySelector('.steps').style.display = 'none';
+    document.getElementById('section-4').classList.remove('active');
+    document.getElementById('success-name').textContent = document.getElementById('full_name').value.split(' ')[0];
+    document.getElementById('success-screen').classList.add('show');
+
+  } catch (err) {
+    showAlert(err.message || 'Something went wrong. Please try again.');
+    btn.disabled = false;
+    spinner.classList.remove('show');
+    btnText.textContent = 'Submit Application';
+  }
+}
+</script>
+</body>
+</html>
