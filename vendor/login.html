@@ -1,21 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vendor Login — ProGuides Store</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-ProGuides Store
-New vendor? Sign up →
-Vendor Portal
-Welcome back to ProGuides Store
-Log in to manage your products, track orders, and grow your store.
-🛍️
-Upload products with photos, sizes & prices
-📦
-Track orders in real time as they come in
-💬
-WhatsApp alerts for every new order
-💳
-Paystack payouts directly to your bank
-Sign in
-Enter your vendor account details below
-Email address
-Password
-Forgot your password?
-or
-Don't have a vendor account? Apply to sell →
+    :root {
+      --teal:   #1B3A4B;
+      --lime:   #A8D832;
+      --lav:    #C4B5F4;
+      --bg:     #F4F6F3;
+      --white:  #FFFFFF;
+      --muted:  #6B7A74;
+      --border: #DDE3DD;
+      --danger: #E05252;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--teal);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* NAV */
+    nav {
+      background: var(--teal);
+      padding: 0 2rem;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.2rem;
+      color: var(--lime);
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--white); font-weight: 400; }
+    .nav-link {
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      font-size: 0.88rem;
+      transition: color .2s;
+    }
+    .nav-link:hover { color: var(--lime); }
+
+    /* MAIN */
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem;
+    }
+
+    .login-wrap {
+      width: 100%;
+      max-width: 440px;
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .login-header .icon {
+      width: 56px; height: 56px;
+      background: var(--teal);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      font-size: 1.5rem;
+    }
+    .login-header h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 800;
+    }
+    .login-header p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-top: .4rem;
+    }
+
+    .card {
+      background: var(--white);
+      border-radius: 16px;
+      padding: 2rem;
+      border: 1px solid var(--border);
+    }
+
+    .field { margin-bottom: 1.25rem; }
+    label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      margin-bottom: .4rem;
+    }
+    input {
+      width: 100%;
+      padding: .75rem 1rem;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      color: var(--teal);
+      background: var(--bg);
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    input:focus {
+      border-color: var(--lime);
+      box-shadow: 0 0 0 3px rgba(168,216,50,0.15);
+      background: var(--white);
+    }
+
+    .forgot {
+      display: block;
+      text-align: right;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: .4rem;
+      text-decoration: none;
+    }
+    .forgot:hover { color: var(--teal); }
+
+    #alertBox {
+      padding: .85rem 1rem;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      margin-bottom: 1.25rem;
+      display: none;
+      background: rgba(224,82,82,0.1);
+      border: 1px solid var(--danger);
+      color: #9b2828;
+      animation: fadeIn .3s ease;
+    }
+    #alertBox.show { display: block; }
+
+    #loginBtn {
+      width: 100%;
+      padding: .9rem;
+      background: var(--lime);
+      color: var(--teal);
+      border: none;
+      border-radius: 12px;
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .2s;
+      margin-top: .5rem;
+    }
+    #loginBtn:hover { background: #96c42a; transform: translateY(-1px); }
+    #loginBtn:disabled { background: var(--border); color: var(--muted); cursor: not-allowed; transform: none; }
+
+    .divider {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.82rem;
+      margin: 1.25rem 0;
+      position: relative;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 40%;
+      height: 1px;
+      background: var(--border);
+    }
+    .divider::before { left: 0; }
+    .divider::after { right: 0; }
+
+    .signup-link {
+      display: block;
+      text-align: center;
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+    .signup-link a {
+      color: var(--teal);
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .signup-link a:hover { color: var(--lime); }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="../index.html">ProGuides<span> Store</span></a>
+  <a class="nav-link" href="signup.html">New vendor? Sign up →</a>
+</nav>
+
+<main>
+  <div class="login-wrap">
+    <div class="login-header">
+      <div class="icon">🛍️</div>
+      <h1>Welcome back</h1>
+      <p>Log in to manage your products and orders.</p>
+    </div>
+
+    <div class="card">
+      <div id="alertBox"></div>
+
+      <div class="field">
+        <label>Email Address</label>
+        <input type="email" id="email" placeholder="you@example.com" autocomplete="email"/>
+      </div>
+
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="password" placeholder="Enter your password"/>
+        <a class="forgot" href="#">Forgot your password?</a>
+      </div>
+
+      <button id="loginBtn">Sign In</button>
+
+      <div class="divider">or</div>
+      <p class="signup-link">Don't have an account? <a href="signup.html">Apply to sell →</a></p>
+    </div>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL  = 'https://jomsflisyeohejfrvxnf.supabase.co';
+  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpvbXNmbGlzeWVvaGVqZnJ2eG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2MTY5MTIsImV4cCI6MjA5NjE5MjkxMn0.qaC_PbEIfHJq4ae9gRJxcUV-fgwrXTMEldO6yj66KNY';
+
+  const { createClient } = supabase;
+  const db = createClient(SUPABASE_URL, SUPABASE_ANON);
+
+  // Redirect if already logged in
+  const existing = localStorage.getItem('proguides_vendor');
+  if (existing) window.location.href = 'dashboard.html';
+
+  function showError(msg) {
+    const box = document.getElementById('alertBox');
+    box.textContent = msg;
+    box.className = 'show';
+  }
+
+  document.getElementById('loginBtn').addEventListener('click', async () => {
+    const email    = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const btn      = document.getElementById('loginBtn');
+
+    if (!email)    { showError('Please enter your email.'); return; }
+    if (!password) { showError('Please enter your password.'); return; }
+
+    btn.disabled = true;
+    btn.textContent = 'Signing in…';
+
+    try {
+      const { data, error } = await db
+        .from('vendors')
+        .select('*')
+        .eq('email', email)
+        .eq('password', password)
+        .single();
+
+      if (error || !data) {
+        showError('Incorrect email or password. Please try again.');
+        return;
+      }
+
+      // Save session
+      localStorage.setItem('proguides_vendor', JSON.stringify(data));
+      window.location.href = 'dashboard.html';
+
+    } catch (err) {
+      showError('Something went wrong. Please try again.');
+      console.error(err);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Sign In';
+    }
+  });
+
+  // Allow Enter key to submit
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') document.getElementById('loginBtn').click();
+  });
+</script>
+</body>
+</html>
