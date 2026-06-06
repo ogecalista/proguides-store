@@ -2,902 +2,730 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Upload Product — ProGuides Store</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     :root {
       --teal:    #1B3A4B;
       --lime:    #A8D832;
       --lav:     #C4B5F4;
-      --teal-lt: #254d62;
-      --lime-dk: #8ab828;
-      --bg:      #f4f6f0;
-      --white:   #ffffff;
-      --text:    #1a1a1a;
-      --muted:   #6b7280;
-      --err:     #e53e3e;
-      --success: #22c55e;
-      --border:  #d1d5db;
-      --radius:  12px;
-      --shadow:  0 4px 24px rgba(27,58,75,0.10);
+      --bg:      #F4F6F3;
+      --white:   #FFFFFF;
+      --muted:   #6B7A74;
+      --border:  #DDE3DD;
+      --danger:  #E05252;
+      --success: #2DB87A;
     }
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: 'DM Sans', sans-serif;
       background: var(--bg);
+      color: var(--teal);
       min-height: 100vh;
-      padding-top: 64px;
     }
 
-    /* ── NAVBAR ── */
-    .navbar {
-      position: fixed;
-      top: 0; left: 0; right: 0;
+    /* ── NAV ── */
+    nav {
       background: var(--teal);
-      padding: 0 24px;
-      height: 60px;
+      padding: 0 2rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      height: 60px;
+      position: sticky;
+      top: 0;
       z-index: 100;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
     }
-    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-    .logo-mark {
-      width: 30px; height: 30px;
-      background: var(--lime);
-      border-radius: 7px;
-      display: grid; place-items: center;
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.2rem;
+      color: var(--lime);
+      text-decoration: none;
     }
-    .logo-mark svg { width: 16px; height: 16px; }
-    .logo-text { font-family: 'Syne', sans-serif; font-size: 17px; color: var(--white); font-weight: 800; }
-    .logo-text span { color: var(--lime); }
-
-    .nav-right { display: flex; align-items: center; gap: 16px; }
-    .nav-link {
-      font-size: 13px;
+    .nav-logo span { color: var(--white); font-weight: 400; }
+    .nav-links { display: flex; gap: 1.5rem; align-items: center; }
+    .nav-links a {
       color: rgba(255,255,255,0.7);
       text-decoration: none;
-      transition: color 0.2s;
+      font-size: 0.88rem;
+      transition: color .2s;
     }
-    .nav-link:hover { color: var(--lime); }
-    .nav-badge {
-      font-size: 12px;
-      font-weight: 700;
-      background: var(--lime);
-      color: var(--teal);
-      padding: 3px 10px;
-      border-radius: 20px;
+    .nav-links a:hover { color: var(--lime); }
+    .nav-links a.active { color: var(--lime); font-weight: 600; }
+    #logoutBtn {
+      background: transparent;
+      border: 1px solid rgba(168,216,50,0.4);
+      color: var(--lime);
+      padding: .35rem .9rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-family: 'DM Sans', sans-serif;
+      transition: all .2s;
     }
+    #logoutBtn:hover { background: var(--lime); color: var(--teal); }
 
     /* ── LAYOUT ── */
-    .page {
-      max-width: 860px;
+    .page-wrap {
+      max-width: 780px;
       margin: 0 auto;
-      padding: 32px 16px 60px;
+      padding: 2.5rem 1.5rem 4rem;
     }
 
     .page-header {
-      margin-bottom: 28px;
+      margin-bottom: 2rem;
     }
     .page-header h1 {
       font-family: 'Syne', sans-serif;
-      font-size: 26px;
-      color: var(--teal);
-      margin-bottom: 4px;
+      font-size: 1.8rem;
+      font-weight: 800;
+      line-height: 1.2;
     }
-    .page-header p { font-size: 14px; color: var(--muted); }
-
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 340px;
-      gap: 20px;
-      align-items: start;
+    .page-header p {
+      color: var(--muted);
+      font-size: 0.92rem;
+      margin-top: .4rem;
     }
 
     /* ── CARD ── */
     .card {
       background: var(--white);
       border-radius: 16px;
-      box-shadow: var(--shadow);
-      overflow: hidden;
+      padding: 2rem;
+      border: 1px solid var(--border);
+      margin-bottom: 1.5rem;
     }
-    .card-head {
-      padding: 18px 24px;
-      border-bottom: 1px solid #f0f0f0;
+    .card-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 1.25rem;
+      padding-bottom: .75rem;
+      border-bottom: 2px solid var(--bg);
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: .5rem;
     }
-    .card-head-icon {
-      width: 34px; height: 34px;
-      background: rgba(168,216,50,0.15);
-      border-radius: 8px;
-      display: grid; place-items: center;
-      flex-shrink: 0;
+    .card-title .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--lime);
+      display: inline-block;
     }
-    .card-head-icon svg { width: 17px; height: 17px; color: var(--teal); }
-    .card-head h2 { font-family: 'Syne', sans-serif; font-size: 15px; color: var(--teal); }
-    .card-body { padding: 24px; }
+
+    /* ── FORM FIELDS ── */
+    .field { margin-bottom: 1.25rem; }
+    label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--teal);
+      margin-bottom: .4rem;
+      letter-spacing: .02em;
+      text-transform: uppercase;
+    }
+    label .req { color: var(--danger); margin-left: 2px; }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="url"],
+    select,
+    textarea {
+      width: 100%;
+      padding: .7rem 1rem;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      color: var(--teal);
+      background: var(--bg);
+      transition: border-color .2s, box-shadow .2s;
+      outline: none;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--lime);
+      box-shadow: 0 0 0 3px rgba(168,216,50,0.15);
+      background: var(--white);
+    }
+    textarea { min-height: 100px; resize: vertical; }
+
+    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
 
     /* ── IMAGE UPLOAD ZONE ── */
-    .drop-zone {
+    .upload-zone {
       border: 2px dashed var(--border);
-      border-radius: var(--radius);
-      padding: 32px 20px;
+      border-radius: 12px;
+      padding: 2rem 1.5rem;
       text-align: center;
       cursor: pointer;
-      transition: all 0.25s;
-      background: #fafafa;
+      transition: all .25s;
+      background: var(--bg);
       position: relative;
     }
-    .drop-zone:hover,
-    .drop-zone.drag-over {
+    .upload-zone:hover, .upload-zone.dragover {
       border-color: var(--lime);
       background: rgba(168,216,50,0.05);
     }
-    .drop-zone input[type=file] {
-      position: absolute;
-      inset: 0;
-      opacity: 0;
-      cursor: pointer;
-      width: 100%;
-      height: 100%;
+    .upload-zone input[type="file"] {
+      position: absolute; inset: 0;
+      opacity: 0; cursor: pointer;
+      width: 100%; height: 100%;
     }
-    .drop-icon {
-      width: 48px; height: 48px;
-      background: rgba(27,58,75,0.07);
-      border-radius: 12px;
-      display: grid; place-items: center;
-      margin: 0 auto 12px;
+    .upload-icon {
+      font-size: 2rem;
+      margin-bottom: .5rem;
+      display: block;
     }
-    .drop-icon svg { width: 24px; height: 24px; color: var(--teal); }
-    .drop-zone h3 { font-size: 14px; font-weight: 600; color: var(--teal); margin-bottom: 4px; }
-    .drop-zone p { font-size: 12px; color: var(--muted); }
-    .drop-zone .browse { color: var(--lime-dk); font-weight: 600; text-decoration: underline; }
+    .upload-zone p {
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+    .upload-zone strong { color: var(--teal); }
 
-    /* image previews */
-    .previews {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-      gap: 10px;
-      margin-top: 16px;
+    /* ── PREVIEWS ── */
+    #previews {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .75rem;
+      margin-top: 1rem;
     }
     .preview-item {
       position: relative;
-      aspect-ratio: 1;
-      border-radius: 8px;
+      width: 90px; height: 90px;
+      border-radius: 10px;
       overflow: hidden;
-      background: #f0f0f0;
+      border: 2px solid var(--border);
+      background: var(--bg);
     }
     .preview-item img {
       width: 100%; height: 100%;
       object-fit: cover;
     }
-    .preview-item .remove-img {
+    .preview-item .uploading-overlay {
+      position: absolute; inset: 0;
+      background: rgba(27,58,75,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--white);
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+    .preview-item .remove-btn {
       position: absolute;
-      top: 4px; right: 4px;
-      width: 20px; height: 20px;
-      background: rgba(0,0,0,0.6);
-      border-radius: 50%;
+      top: 3px; right: 3px;
+      background: var(--danger);
+      color: white;
       border: none;
+      border-radius: 50%;
+      width: 20px; height: 20px;
+      font-size: 0.7rem;
       cursor: pointer;
-      display: grid; place-items: center;
-      color: #fff;
-      font-size: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       line-height: 1;
     }
-    .preview-item .upload-progress {
-      position: absolute;
-      inset: 0;
-      background: rgba(27,58,75,0.6);
-      display: grid; place-items: center;
-      color: #fff;
-      font-size: 12px;
-      font-weight: 700;
-    }
-    .preview-item.uploaded::after {
-      content: '✓';
+    .preview-item .done-badge {
       position: absolute;
       bottom: 4px; right: 4px;
-      width: 18px; height: 18px;
       background: var(--success);
+      color: white;
       border-radius: 50%;
-      display: grid; place-items: center;
-      font-size: 10px;
-      color: #fff;
-      font-weight: 700;
-    }
-
-    /* ── FIELDS ── */
-    .field { margin-bottom: 18px; }
-    .field:last-child { margin-bottom: 0; }
-    .field label {
-      display: block;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--teal);
-      margin-bottom: 6px;
-    }
-    .field label .req { color: var(--err); margin-left: 2px; }
-    .field label .hint {
-      font-weight: 400;
-      color: var(--muted);
-      font-size: 12px;
-      margin-left: 6px;
-    }
-    .field input,
-    .field select,
-    .field textarea {
-      width: 100%;
-      padding: 11px 14px;
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      color: var(--text);
-      background: var(--white);
-      transition: border-color 0.2s, box-shadow 0.2s;
-      outline: none;
-    }
-    .field input:focus,
-    .field select:focus,
-    .field textarea:focus {
-      border-color: var(--teal);
-      box-shadow: 0 0 0 3px rgba(27,58,75,0.08);
-    }
-    .field input.invalid,
-    .field select.invalid { border-color: var(--err); }
-    .field-err { font-size: 12px; color: var(--err); margin-top: 4px; display: none; }
-    .field-err.show { display: block; }
-    .field textarea { resize: vertical; min-height: 90px; }
-
-    /* price row */
-    .price-wrap { position: relative; }
-    .price-wrap .currency {
-      position: absolute;
-      left: 14px; top: 50%;
-      transform: translateY(-50%);
-      font-weight: 700;
-      color: var(--muted);
-      font-size: 13px;
-      pointer-events: none;
-    }
-    .price-wrap input { padding-left: 36px; }
-
-    /* field row */
-    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-
-    /* stock toggle */
-    .stock-toggle {
+      width: 18px; height: 18px;
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 12px 14px;
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius);
-      cursor: pointer;
+      justify-content: center;
+      font-size: 0.6rem;
     }
-    .toggle-switch {
-      width: 40px; height: 22px;
-      background: var(--border);
-      border-radius: 11px;
-      position: relative;
-      transition: background 0.2s;
-      flex-shrink: 0;
-    }
-    .toggle-switch::after {
-      content: '';
-      position: absolute;
-      width: 16px; height: 16px;
-      background: #fff;
-      border-radius: 50%;
-      top: 3px; left: 3px;
-      transition: left 0.2s;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-    }
-    .toggle-switch.on { background: var(--lime); }
-    .toggle-switch.on::after { left: 21px; }
-    .stock-label { font-size: 13px; color: var(--text); }
-    .stock-label span { display: block; font-size: 11px; color: var(--muted); margin-top: 1px; }
 
-    /* ── SIDEBAR ── */
-    .sidebar { display: flex; flex-direction: column; gap: 16px; }
-
-    /* fee breakdown */
-    .fee-box {
-      background: linear-gradient(135deg, var(--teal), var(--teal-lt));
-      border-radius: 14px;
-      padding: 20px;
-      color: #fff;
-    }
-    .fee-box h3 { font-family: 'Syne', sans-serif; font-size: 14px; margin-bottom: 14px; opacity: 0.85; }
-    .fee-row {
+    /* ── TAGS ── */
+    .tags-wrap {
       display: flex;
-      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: .4rem;
+      margin-top: .5rem;
+    }
+    .tag-chip {
+      background: var(--teal);
+      color: var(--white);
+      border-radius: 20px;
+      padding: .25rem .75rem;
+      font-size: 0.8rem;
+      display: flex;
       align-items: center;
-      font-size: 13px;
-      padding: 6px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
+      gap: .3rem;
     }
-    .fee-row:last-child { border-bottom: none; }
-    .fee-row .label { opacity: 0.7; }
-    .fee-row .value { font-weight: 700; }
-    .fee-row.payout .value { color: var(--lime); font-size: 15px; }
-
-    /* tips */
-    .tips-card .tip {
-      display: flex;
-      gap: 10px;
-      padding: 10px 0;
-      border-bottom: 1px solid #f0f0f0;
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.5;
-    }
-    .tips-card .tip:last-child { border-bottom: none; padding-bottom: 0; }
-    .tips-card .tip-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
-
-    /* ── SUBMIT BTN ── */
-    .submit-bar {
-      margin-top: 24px;
-      display: flex;
-      gap: 12px;
-    }
-    .btn {
-      padding: 13px 24px;
-      border-radius: var(--radius);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
+    .tag-chip button {
+      background: none;
       border: none;
-      transition: all 0.2s;
+      color: rgba(255,255,255,0.6);
+      cursor: pointer;
+      font-size: 0.75rem;
+      padding: 0;
+      line-height: 1;
     }
-    .btn-primary {
+    .tag-chip button:hover { color: var(--lime); }
+    #tagInput {
       flex: 1;
+      min-width: 120px;
+      border: none;
+      background: transparent;
+      font-size: 0.9rem;
+      color: var(--teal);
+      outline: none;
+      padding: .3rem .2rem;
+    }
+    .tags-field {
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: .5rem .75rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: .4rem;
+      align-items: center;
+      background: var(--bg);
+      cursor: text;
+      transition: border-color .2s;
+    }
+    .tags-field:focus-within {
+      border-color: var(--lime);
+      box-shadow: 0 0 0 3px rgba(168,216,50,0.15);
+      background: var(--white);
+    }
+    .tag-hint { font-size: 0.78rem; color: var(--muted); margin-top: .3rem; }
+
+    /* ── SUBMIT ── */
+    #submitBtn {
+      width: 100%;
+      padding: 1rem;
       background: var(--lime);
       color: var(--teal);
-    }
-    .btn-primary:hover { background: var(--lime-dk); transform: translateY(-1px); }
-    .btn-primary:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
-    .btn-ghost {
-      background: transparent;
-      color: var(--teal);
-      border: 1.5px solid var(--border);
-    }
-    .btn-ghost:hover { border-color: var(--teal); }
-
-    .spinner {
-      width: 16px; height: 16px;
-      border: 2px solid rgba(27,58,75,0.2);
-      border-top-color: var(--teal);
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-      display: inline-block;
-      vertical-align: middle;
-      margin-right: 6px;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* ── TOAST ── */
-    #toast {
-      position: fixed;
-      bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
-      background: var(--teal);
-      color: #fff;
-      padding: 12px 22px;
-      border-radius: 40px;
-      font-size: 13px;
-      font-weight: 500;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.18);
-      transition: transform 0.35s cubic-bezier(.34,1.56,.64,1);
-      z-index: 9999;
-      white-space: nowrap;
-    }
-    #toast.show { transform: translateX(-50%) translateY(0); }
-    #toast.err { background: var(--err); }
-    #toast.ok { background: var(--success); }
-
-    /* ── SUCCESS OVERLAY ── */
-    .success-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(27,58,75,0.7);
-      z-index: 200;
-      place-items: center;
-    }
-    .success-overlay.show { display: grid; }
-    .success-modal {
-      background: var(--white);
-      border-radius: 20px;
-      padding: 40px 36px;
-      text-align: center;
-      max-width: 380px;
-      width: 90%;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
-    }
-    .success-modal .s-icon {
-      width: 68px; height: 68px;
-      background: linear-gradient(135deg, var(--lime), #c8f060);
-      border-radius: 50%;
-      display: grid; place-items: center;
-      margin: 0 auto 16px;
-      font-size: 28px;
-    }
-    .success-modal h2 {
+      border: none;
+      border-radius: 12px;
       font-family: 'Syne', sans-serif;
-      font-size: 20px;
-      color: var(--teal);
-      margin-bottom: 8px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .2s;
+      letter-spacing: .02em;
+      margin-top: .5rem;
     }
-    .success-modal p { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 24px; }
-    .modal-btns { display: flex; gap: 10px; }
-    .modal-btns .btn { flex: 1; font-size: 13px; }
+    #submitBtn:hover { background: #96c42a; transform: translateY(-1px); }
+    #submitBtn:disabled {
+      background: var(--border);
+      color: var(--muted);
+      cursor: not-allowed;
+      transform: none;
+    }
 
-    @media (max-width: 700px) {
-      .grid { grid-template-columns: 1fr; }
-      .sidebar { order: -1; }
-      .fee-box { display: none; }
-      .field-row { grid-template-columns: 1fr; gap: 0; }
+    /* ── ALERTS ── */
+    #alertBox {
+      padding: 1rem 1.25rem;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      margin-bottom: 1.25rem;
+      display: none;
+      animation: fadeIn .3s ease;
+    }
+    #alertBox.success {
+      background: rgba(45,184,122,0.1);
+      border: 1px solid var(--success);
+      color: #1a7a52;
+      display: block;
+    }
+    #alertBox.error {
+      background: rgba(224,82,82,0.1);
+      border: 1px solid var(--danger);
+      color: #9b2828;
+      display: block;
+    }
+
+    /* ── PROGRESS ── */
+    .progress-bar-wrap {
+      background: var(--border);
+      border-radius: 4px;
+      height: 6px;
+      margin-top: .5rem;
+      overflow: hidden;
+      display: none;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--lime);
+      border-radius: 4px;
+      transition: width .3s;
+      width: 0%;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+
+    @media (max-width: 600px) {
+      .row-2, .row-3 { grid-template-columns: 1fr; }
+      .card { padding: 1.25rem; }
     }
   </style>
 </head>
 <body>
 
-  <!-- NAVBAR -->
-  <nav class="navbar">
-    <a class="nav-logo" href="dashboard.html">
-      <div class="logo-mark">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#1B3A4B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
-          <path d="M3 6h18M16 10a4 4 0 01-8 0"/>
-        </svg>
-      </div>
-      <span class="logo-text">Pro<span>Guides</span> Store</span>
-    </a>
-    <div class="nav-right">
-      <a class="nav-link" href="dashboard.html">← Dashboard</a>
-      <span class="nav-badge" id="vendorBadge">Vendor</span>
+<nav>
+  <a class="nav-logo" href="../index.html">ProGuides<span> Store</span></a>
+  <div class="nav-links">
+    <a href="dashboard.html">Dashboard</a>
+    <a href="upload.html" class="active">Upload</a>
+    <button id="logoutBtn">Logout</button>
+  </div>
+</nav>
+
+<div class="page-wrap">
+  <div class="page-header">
+    <h1>Upload a Product</h1>
+    <p>Fill in the details below to list your product on ProGuides Store.</p>
+  </div>
+
+  <div id="alertBox"></div>
+
+  <!-- ── BASIC INFO ── -->
+  <div class="card">
+    <div class="card-title"><span class="dot"></span> Basic Information</div>
+
+    <div class="field">
+      <label>Product Name <span class="req">*</span></label>
+      <input type="text" id="name" placeholder="e.g. Ankara Midi Dress"/>
     </div>
-  </nav>
 
-  <!-- PAGE -->
-  <div class="page">
-    <div class="page-header">
-      <h1>Upload a Product</h1>
-      <p>Fill in the details below. Images are uploaded to Cloudinary, product info saved to your store.</p>
+    <div class="row-2">
+      <div class="field">
+        <label>Category <span class="req">*</span></label>
+        <select id="category">
+          <option value="">— Select category —</option>
+          <option>Fashion & Apparel</option>
+          <option>Digital Products</option>
+          <option>Beauty & Skincare</option>
+          <option>Food & Snacks</option>
+          <option>Electronics</option>
+          <option>Home & Living</option>
+          <option>Health & Wellness</option>
+          <option>Books & Education</option>
+          <option>Art & Crafts</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Delivery Type <span class="req">*</span></label>
+        <select id="delivery_type">
+          <option value="">— Select —</option>
+          <option value="physical">Physical (Shipped)</option>
+          <option value="digital">Digital (Instant)</option>
+          <option value="pickup">Pickup Only</option>
+        </select>
+      </div>
     </div>
 
-    <div class="grid">
+    <div class="field">
+      <label>Description <span class="req">*</span></label>
+      <textarea id="description" placeholder="Describe your product — materials, sizes, features..."></textarea>
+    </div>
+  </div>
 
-      <!-- LEFT: FORM -->
-      <div>
-
-        <!-- Images -->
-        <div class="card" style="margin-bottom:20px">
-          <div class="card-head">
-            <div class="card-head-icon">
-              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-            </div>
-            <h2>Product Images</h2>
-          </div>
-          <div class="card-body">
-            <div class="drop-zone" id="dropZone">
-              <input type="file" id="imageInput" accept="image/*" multiple />
-              <div class="drop-icon">
-                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0018 9h-1.26A8 8 0 103 16.3"/></svg>
-              </div>
-              <h3>Drop images here or <span class="browse">browse</span></h3>
-              <p>PNG, JPG, WEBP up to 10MB each · Max 5 images</p>
-            </div>
-            <div class="previews" id="previews"></div>
-            <div class="field-err show" id="err-images" style="display:none">Please upload at least one product image</div>
-          </div>
-        </div>
-
-        <!-- Basic Info -->
-        <div class="card" style="margin-bottom:20px">
-          <div class="card-head">
-            <div class="card-head-icon">
-              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-            </div>
-            <h2>Product Details</h2>
-          </div>
-          <div class="card-body">
-            <div class="field">
-              <label>Product Name <span class="req">*</span></label>
-              <input type="text" id="productName" placeholder="e.g. Women's Ankara Maxi Dress" />
-              <div class="field-err" id="err-productName">Product name is required</div>
-            </div>
-
-            <div class="field">
-              <label>Category <span class="req">*</span></label>
-              <select id="productCategory">
-                <option value="">— Select category —</option>
-                <option>Fashion & Apparel</option>
-                <option>Electronics & Gadgets</option>
-                <option>Beauty & Skincare</option>
-                <option>Food & Groceries</option>
-                <option>Home & Living</option>
-                <option>Books & Stationery</option>
-                <option>Digital Products</option>
-                <option>Health & Wellness</option>
-                <option>Sports & Fitness</option>
-                <option>Other</option>
-              </select>
-              <div class="field-err" id="err-productCategory">Select a category</div>
-            </div>
-
-            <div class="field">
-              <label>Description <span class="req">*</span></label>
-              <textarea id="productDesc" placeholder="Describe your product — materials, sizes, colours, what makes it special..."></textarea>
-              <div class="field-err" id="err-productDesc">Add a description</div>
-            </div>
-
-            <div class="field-row">
-              <div class="field">
-                <label>Price (₦) <span class="req">*</span></label>
-                <div class="price-wrap">
-                  <span class="currency">₦</span>
-                  <input type="number" id="productPrice" placeholder="5000" min="0" oninput="calcFee()" />
-                </div>
-                <div class="field-err" id="err-productPrice">Enter a valid price</div>
-              </div>
-              <div class="field">
-                <label>Quantity <span class="req">*</span><span class="hint">in stock</span></label>
-                <input type="number" id="productQty" placeholder="10" min="1" />
-                <div class="field-err" id="err-productQty">Enter stock quantity</div>
-              </div>
-            </div>
-
-            <div class="field">
-              <label>Delivery Type <span class="req">*</span></label>
-              <select id="deliveryType">
-                <option value="">— How is this delivered? —</option>
-                <option value="physical">Physical — Ship to buyer</option>
-                <option value="digital">Digital — Download link</option>
-                <option value="pickup">Pickup only</option>
-                <option value="whatsapp">WhatsApp order</option>
-              </select>
-              <div class="field-err" id="err-deliveryType">Select delivery type</div>
-            </div>
-
-            <div class="field">
-              <label>WhatsApp Order Link <span class="hint">optional</span></label>
-              <input type="text" id="whatsappLink" placeholder="https://wa.me/2348107761250" />
-            </div>
-
-            <div class="field">
-              <label>Tags <span class="hint">comma separated, optional</span></label>
-              <input type="text" id="productTags" placeholder="ankara, dress, women, fashion" />
-            </div>
-
-            <div class="field">
-              <label>In Stock</label>
-              <div class="stock-toggle" onclick="toggleStock()">
-                <div class="toggle-switch on" id="stockToggle"></div>
-                <div class="stock-label">
-                  <span id="stockLabel">Available for purchase</span>
-                  <span id="stockSub">Customers can order this product</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="submit-bar">
-          <button class="btn btn-ghost" onclick="window.location='dashboard.html'">Cancel</button>
-          <button class="btn btn-primary" id="submitBtn" onclick="submitProduct()">Publish Product 🚀</button>
-        </div>
+  <!-- ── PRICING & STOCK ── -->
+  <div class="card">
+    <div class="card-title"><span class="dot"></span> Pricing & Stock</div>
+    <div class="row-3">
+      <div class="field">
+        <label>Price (₦) <span class="req">*</span></label>
+        <input type="number" id="price" placeholder="0.00" min="0" step="0.01"/>
       </div>
-
-      <!-- RIGHT: SIDEBAR -->
-      <div class="sidebar">
-
-        <!-- Fee Breakdown -->
-        <div class="fee-box">
-          <h3>💰 Earnings Preview</h3>
-          <div class="fee-row">
-            <span class="label">Listing price</span>
-            <span class="value" id="feePrice">₦0</span>
-          </div>
-          <div class="fee-row">
-            <span class="label">ProGuides fee (5%)</span>
-            <span class="value" id="feeCut">-₦0</span>
-          </div>
-          <div class="fee-row payout">
-            <span class="label">Your payout</span>
-            <span class="value" id="feePayout">₦0</span>
-          </div>
-        </div>
-
-        <!-- Tips -->
-        <div class="card tips-card">
-          <div class="card-head">
-            <div class="card-head-icon">
-              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            </div>
-            <h2>Tips for More Sales</h2>
-          </div>
-          <div class="card-body">
-            <div class="tip"><span class="tip-icon">📸</span><span>Use bright, clear photos with a plain background. Multiple angles sell faster.</span></div>
-            <div class="tip"><span class="tip-icon">✍️</span><span>Write descriptions that answer common questions — size, material, colour.</span></div>
-            <div class="tip"><span class="tip-icon">🏷️</span><span>Price competitively. Check similar products on Jumia or Jiji first.</span></div>
-            <div class="tip"><span class="tip-icon">📦</span><span>Keep your stock quantity updated to avoid failed orders.</span></div>
-            <div class="tip"><span class="tip-icon">💬</span><span>Add your WhatsApp link so buyers can reach you directly.</span></div>
-          </div>
-        </div>
-
+      <div class="field">
+        <label>Quantity</label>
+        <input type="number" id="quantity" placeholder="e.g. 50" min="0"/>
+      </div>
+      <div class="field">
+        <label>In Stock?</label>
+        <select id="in_stock">
+          <option value="true">Yes</option>
+          <option value="false">No</option>
+        </select>
       </div>
     </div>
   </div>
 
-  <!-- SUCCESS OVERLAY -->
-  <div class="success-overlay" id="successOverlay">
-    <div class="success-modal">
-      <div class="s-icon">🎉</div>
-      <h2>Product Published!</h2>
-      <p>Your product is now live on ProGuides Store. Share it with your customers to start getting orders!</p>
-      <div class="modal-btns">
-        <button class="btn btn-ghost" onclick="addAnother()">+ Add Another</button>
-        <button class="btn btn-primary" onclick="window.location='dashboard.html'">Dashboard →</button>
+  <!-- ── CONTACT ── -->
+  <div class="card">
+    <div class="card-title"><span class="dot"></span> Order & Contact</div>
+    <div class="field">
+      <label>WhatsApp Order Link</label>
+      <input type="url" id="whatsapp_link" placeholder="https://wa.me/2348012345678"/>
+    </div>
+    <div class="field">
+      <label>Tags</label>
+      <div class="tags-field" id="tagsField">
+        <div id="tagChips"></div>
+        <input type="text" id="tagInput" placeholder="Type a tag and press Enter…"/>
       </div>
+      <p class="tag-hint">Press Enter or comma after each tag (e.g. ankara, dress, plus-size)</p>
     </div>
   </div>
 
-  <!-- TOAST -->
-  <div id="toast"></div>
+  <!-- ── IMAGES ── -->
+  <div class="card">
+    <div class="card-title"><span class="dot"></span> Product Images</div>
+    <div class="upload-zone" id="uploadZone">
+      <input type="file" id="imageInput" accept="image/*" multiple/>
+      <span class="upload-icon">🖼️</span>
+      <p><strong>Click to upload</strong> or drag images here</p>
+      <p>JPG, PNG, WEBP — up to 5 images</p>
+    </div>
+    <div class="progress-bar-wrap" id="progressWrap">
+      <div class="progress-bar-fill" id="progressFill"></div>
+    </div>
+    <div id="previews"></div>
+  </div>
 
-  <!-- SUPABASE -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- ── SUBMIT ── -->
+  <button id="submitBtn">Publish Product</button>
+</div>
 
-  <script>
-    /* ─── CONFIG ─── */
-    const SUPABASE_URL  = 'https://jomsflisyeohejfrvxnf.supabase.co';
-    const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpvbXNmbGlzeWVvaGVqZnJ2eG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2MTY5MTIsImV4cCI6MjA5NjE5MjkxMn0.qaC_PbEIfHJq4ae9gRJxcUV-fgwrXTMEldO6yj66KNY';
-    const CLOUD_NAME    = 'dyx08k7ws';
-    const UPLOAD_PRESET = 'proguides_products';
+<!-- ── SUPABASE ── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  // ── CONFIG ──────────────────────────────────────────────
+  const SUPABASE_URL    = 'https://jomsflisyeohejfrvxnf.supabase.co';
+  const SUPABASE_ANON   = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpvbXNmbGlzeWVvaGVqZnJ2eG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2MTY5MTIsImV4cCI6MjA5NjE5MjkxMn0.qaC_PbEIfHJq4ae9gRJxcUV-fgwrXTMEldO6yj66KNY';
+  const CLOUDINARY_NAME = 'dyx08k7ws';
+  const CLOUDINARY_PRESET = 'proguides_products';
 
-    const { createClient } = supabase;
-    const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
+  const { createClient } = supabase;
+  const db = createClient(SUPABASE_URL, SUPABASE_ANON);
 
-    /* ─── AUTH CHECK ─── */
-    let currentUser = null;
-    let vendorId    = null;
+  // ── SESSION CHECK ────────────────────────────────────────
+  let currentVendor = null;
 
-    async function init() {
-      const { data: { user } } = await sb.auth.getUser();
-      if (!user) { window.location = 'login.html'; return; }
-      currentUser = user;
-
-      // get vendor record
-      const { data: vendor } = await sb.from('vendors').select('id, store_name').eq('user_id', user.id).single();
-      if (vendor) {
-        vendorId = vendor.id;
-        document.getElementById('vendorBadge').textContent = vendor.store_name;
-      }
+  (async () => {
+    const stored = localStorage.getItem('proguides_vendor');
+    if (!stored) { window.location.href = 'login.html'; return; }
+    try {
+      currentVendor = JSON.parse(stored);
+    } catch {
+      window.location.href = 'login.html';
     }
-    init();
+  })();
 
-    /* ─── IMAGE HANDLING ─── */
-    let selectedFiles = [];
-    let uploadedUrls  = [];
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    localStorage.removeItem('proguides_vendor');
+    window.location.href = 'login.html';
+  });
 
-    const dropZone   = document.getElementById('dropZone');
-    const imageInput = document.getElementById('imageInput');
-    const previews   = document.getElementById('previews');
+  // ── TAGS ────────────────────────────────────────────────
+  let tags = [];
 
-    imageInput.addEventListener('change', e => handleFiles(e.target.files));
+  function renderTags() {
+    const chips = document.getElementById('tagChips');
+    chips.innerHTML = tags.map((t, i) => `
+      <span class="tag-chip">${t}
+        <button type="button" onclick="removeTag(${i})">✕</button>
+      </span>`).join('');
+  }
 
-    dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
-    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
-    dropZone.addEventListener('drop', e => {
+  function addTag(raw) {
+    const val = raw.trim().replace(/,+$/, '').toLowerCase();
+    if (val && !tags.includes(val) && tags.length < 10) {
+      tags.push(val);
+      renderTags();
+    }
+  }
+
+  window.removeTag = (i) => { tags.splice(i, 1); renderTags(); };
+
+  document.getElementById('tagInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ',') {
       e.preventDefault();
-      dropZone.classList.remove('drag-over');
-      handleFiles(e.dataTransfer.files);
+      addTag(e.target.value);
+      e.target.value = '';
+    }
+  });
+  document.getElementById('tagInput').addEventListener('blur', (e) => {
+    if (e.target.value.trim()) { addTag(e.target.value); e.target.value = ''; }
+  });
+  document.getElementById('tagsField').addEventListener('click', () => {
+    document.getElementById('tagInput').focus();
+  });
+
+  // ── DRAG & DROP ─────────────────────────────────────────
+  const zone = document.getElementById('uploadZone');
+  zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('dragover'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+  zone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    zone.classList.remove('dragover');
+    handleFiles(e.dataTransfer.files);
+  });
+  document.getElementById('imageInput').addEventListener('change', (e) => handleFiles(e.target.files));
+
+  // ── IMAGE STATE ─────────────────────────────────────────
+  let imageSlots = []; // { file, previewUrl, cloudinaryUrl | null, uploading }
+
+  function handleFiles(fileList) {
+    const allowed = 5 - imageSlots.length;
+    if (allowed <= 0) { showAlert('You can upload up to 5 images.', 'error'); return; }
+    const files = Array.from(fileList).slice(0, allowed);
+    files.forEach(file => {
+      const url = URL.createObjectURL(file);
+      const idx = imageSlots.length;
+      imageSlots.push({ file, previewUrl: url, cloudinaryUrl: null, uploading: true });
+      renderPreviews();
+      uploadToCloudinary(file, idx);
     });
+  }
 
-    function handleFiles(files) {
-      const arr = Array.from(files);
-      if (selectedFiles.length + arr.length > 5) {
-        toast('Max 5 images allowed', true); return;
-      }
-      arr.forEach(file => {
-        if (!file.type.startsWith('image/')) return;
-        if (file.size > 10 * 1024 * 1024) { toast('Image too large (max 10MB)', true); return; }
-        selectedFiles.push(file);
-        renderPreview(file, selectedFiles.length - 1);
-      });
-    }
-
-    function renderPreview(file, idx) {
-      const reader = new FileReader();
-      reader.onload = e => {
-        const div = document.createElement('div');
-        div.className = 'preview-item';
-        div.id = `prev-${idx}`;
-        div.innerHTML = `
-          <img src="${e.target.result}" alt="preview" />
-          <button class="remove-img" onclick="removeImg(${idx})">✕</button>
-        `;
-        previews.appendChild(div);
-      };
-      reader.readAsDataURL(file);
-    }
-
-    function removeImg(idx) {
-      selectedFiles.splice(idx, 1);
-      uploadedUrls.splice(idx, 1);
-      previews.innerHTML = '';
-      selectedFiles.forEach((f, i) => renderPreview(f, i));
-    }
-
-    async function uploadAllImages() {
-      uploadedUrls = [];
-      for (let i = 0; i < selectedFiles.length; i++) {
-        const file = selectedFiles[i];
-        const prevEl = document.getElementById(`prev-${i}`);
-
-        // show progress
-        const prog = document.createElement('div');
-        prog.className = 'upload-progress';
-        prog.textContent = 'Uploading…';
-        if (prevEl) prevEl.appendChild(prog);
-
-        const fd = new FormData();
-        fd.append('file', file);
-        fd.append('upload_preset', UPLOAD_PRESET);
-        fd.append('folder', 'proguides-products');
-
-        const res  = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, { method: 'POST', body: fd });
-        const data = await res.json();
-
-        if (data.secure_url) {
-          uploadedUrls.push(data.secure_url);
-          if (prevEl) { prog.remove(); prevEl.classList.add('uploaded'); }
-        } else {
-          throw new Error('Image upload failed: ' + (data.error?.message || 'Unknown error'));
+  function renderPreviews() {
+    const wrap = document.getElementById('previews');
+    wrap.innerHTML = imageSlots.map((slot, i) => `
+      <div class="preview-item" id="slot-${i}">
+        <img src="${slot.previewUrl}" alt="preview"/>
+        ${slot.uploading
+          ? `<div class="uploading-overlay">Uploading…</div>`
+          : slot.cloudinaryUrl
+            ? `<div class="done-badge">✓</div>`
+            : `<div class="uploading-overlay" style="background:rgba(224,82,82,.7)">Error</div>`
         }
-      }
-      return uploadedUrls;
-    }
+        ${!slot.uploading ? `<button class="remove-btn" onclick="removeSlot(${i})">✕</button>` : ''}
+      </div>`).join('');
+  }
 
-    /* ─── FEE CALC ─── */
-    function calcFee() {
-      const price = parseFloat(document.getElementById('productPrice').value) || 0;
-      const fee   = price * 0.05;
-      const pay   = price - fee;
-      document.getElementById('feePrice').textContent  = '₦' + price.toLocaleString();
-      document.getElementById('feeCut').textContent    = '-₦' + fee.toLocaleString();
-      document.getElementById('feePayout').textContent = '₦' + pay.toLocaleString();
-    }
+  window.removeSlot = (i) => {
+    imageSlots.splice(i, 1);
+    renderPreviews();
+  };
 
-    /* ─── STOCK TOGGLE ─── */
-    let inStock = true;
-    function toggleStock() {
-      inStock = !inStock;
-      const tog = document.getElementById('stockToggle');
-      const lbl = document.getElementById('stockLabel');
-      const sub = document.getElementById('stockSub');
-      tog.className = 'toggle-switch' + (inStock ? ' on' : '');
-      lbl.textContent = inStock ? 'Available for purchase' : 'Out of stock';
-      sub.textContent = inStock ? 'Customers can order this product' : 'Hidden from buyers until restocked';
-    }
+  async function uploadToCloudinary(file, idx) {
+    const progressWrap = document.getElementById('progressWrap');
+    const progressFill = document.getElementById('progressFill');
+    progressWrap.style.display = 'block';
 
-    /* ─── VALIDATION ─── */
-    function v(id) { return document.getElementById(id)?.value?.trim() || ''; }
-    function showErr(id) { document.getElementById(id)?.classList.add('show'); }
-    function hideErr(id) { document.getElementById(id)?.classList.remove('show'); }
-    function markInvalid(id) { document.getElementById(id)?.classList.add('invalid'); }
-    function markValid(id) { document.getElementById(id)?.classList.remove('invalid'); }
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('upload_preset', CLOUDINARY_PRESET);
+    fd.append('folder', 'proguides/products');
 
-    function validate() {
-      let ok = true;
-      if (selectedFiles.length === 0) {
-        document.getElementById('err-images').style.display = 'block'; ok = false;
-      } else { document.getElementById('err-images').style.display = 'none'; }
+    try {
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', `https://api.cloudinary.com/v1_1/${CLOUDINARY_NAME}/image/upload`);
 
-      const checks = [
-        ['productName',     'Enter a product name'],
-        ['productCategory', 'Select a category'],
-        ['productDesc',     'Add a description'],
-        ['deliveryType',    'Select delivery type'],
-      ];
-      checks.forEach(([id, msg]) => {
-        if (!v(id)) { showErr('err-' + id); markInvalid(id); ok = false; }
-        else { hideErr('err-' + id); markValid(id); }
+      xhr.upload.onprogress = (e) => {
+        if (e.lengthComputable) {
+          const pct = Math.round((e.loaded / e.total) * 100);
+          progressFill.style.width = pct + '%';
+        }
+      };
+
+      const result = await new Promise((resolve, reject) => {
+        xhr.onload = () => {
+          if (xhr.status === 200) resolve(JSON.parse(xhr.responseText));
+          else reject(new Error(`Cloudinary error ${xhr.status}`));
+        };
+        xhr.onerror = () => reject(new Error('Network error'));
+        xhr.send(fd);
       });
 
-      const price = parseFloat(document.getElementById('productPrice').value);
-      if (!price || price <= 0) { showErr('err-productPrice'); markInvalid('productPrice'); ok = false; }
-      else { hideErr('err-productPrice'); markValid('productPrice'); }
-
-      const qty = parseInt(document.getElementById('productQty').value);
-      if (!qty || qty < 1) { showErr('err-productQty'); markInvalid('productQty'); ok = false; }
-      else { hideErr('err-productQty'); markValid('productQty'); }
-
-      return ok;
+      imageSlots[idx].cloudinaryUrl = result.secure_url;
+      imageSlots[idx].uploading = false;
+    } catch (err) {
+      console.error('Cloudinary upload failed:', err);
+      imageSlots[idx].uploading = false;
+      imageSlots[idx].cloudinaryUrl = null;
     }
+    renderPreviews();
+    progressWrap.style.display = 'none';
+    progressFill.style.width = '0%';
+  }
 
-    /* ─── SUBMIT ─── */
-    async function submitProduct() {
-      if (!validate()) { toast('Please fix the errors above', true); return; }
+  // ── HELPERS ─────────────────────────────────────────────
+  function showAlert(msg, type = 'error') {
+    const box = document.getElementById('alertBox');
+    box.textContent = msg;
+    box.className = type;
+    box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    if (type === 'success') setTimeout(() => { box.className = ''; box.style.display = 'none'; }, 6000);
+  }
 
-      const btn = document.getElementById('submitBtn');
-      btn.disabled = true;
-      btn.innerHTML = '<span class="spinner"></span> Uploading images…';
+  function val(id) { return document.getElementById(id).value.trim(); }
 
-      try {
-        // 1. Upload images to Cloudinary
-        const imageUrls = await uploadAllImages();
-        btn.innerHTML = '<span class="spinner"></span> Saving product…';
+  // ── SUBMIT ──────────────────────────────────────────────
+  document.getElementById('submitBtn').addEventListener('click', async () => {
+    const btn = document.getElementById('submitBtn');
 
-        // 2. Parse tags
-        const tagsRaw = v('productTags');
-        const tags = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean) : [];
+    // Validation
+    if (!val('name'))          { showAlert('Product name is required.'); return; }
+    if (!val('category'))      { showAlert('Please select a category.'); return; }
+    if (!val('delivery_type')) { showAlert('Please select a delivery type.'); return; }
+    if (!val('description'))   { showAlert('Description is required.'); return; }
+    if (!val('price') || isNaN(parseFloat(val('price')))) { showAlert('A valid price is required.'); return; }
 
-        // 3. Insert to Supabase
-        const { error } = await sb.from('products').insert({
-          vendor_id:     vendorId,
-          name:          v('productName'),
-          category:      v('productCategory'),
-          description:   v('productDesc'),
-          price:         parseFloat(document.getElementById('productPrice').value),
-          quantity:      parseInt(document.getElementById('productQty').value),
-          delivery_type: v('deliveryType'),
-          whatsapp_link: v('whatsappLink'),
-          tags:          tags,
-          images:        imageUrls,
-          in_stock:      inStock,
-          status:        'active',
-        });
+    const stillUploading = imageSlots.some(s => s.uploading);
+    if (stillUploading) { showAlert('Images are still uploading — please wait.'); return; }
 
-        if (error) throw error;
+    const images = imageSlots.filter(s => s.cloudinaryUrl).map(s => s.cloudinaryUrl);
 
-        // 4. Show success
-        document.getElementById('successOverlay').classList.add('show');
-        toast('Product published! 🎉', false, true);
+    // Build payload — match products table schema exactly
+    const payload = {
+      vendor_id:     currentVendor.id,
+      name:          val('name'),
+      category:      val('category'),
+      description:   val('description'),
+      price:         parseFloat(val('price')),
+      quantity:      val('quantity') ? parseInt(val('quantity'), 10) : null,
+      delivery_type: val('delivery_type'),
+      whatsapp_link: val('whatsapp_link') || null,
+      tags:          tags.length > 0 ? tags : null,
+      images:        images.length > 0 ? images : null,
+      in_stock:      document.getElementById('in_stock').value === 'true',
+      status:        'pending',    // pending review by admin
+    };
 
-      } catch (err) {
-        console.error(err);
-        toast(err.message || 'Something went wrong. Try again.', true);
-        btn.disabled = false;
-        btn.innerHTML = 'Publish Product 🚀';
+    btn.disabled = true;
+    btn.textContent = 'Publishing…';
+
+    try {
+      const { data, error } = await db
+        .from('products')
+        .insert([payload])
+        .select();
+
+      if (error) {
+        console.error('Supabase insert error:', error);
+        // Surface the exact error message so it's easy to diagnose
+        showAlert(`Failed to save product: ${error.message || error.details || JSON.stringify(error)}`, 'error');
+        return;
       }
-    }
 
-    function addAnother() {
-      document.getElementById('successOverlay').classList.remove('show');
-      // reset form
-      selectedFiles = []; uploadedUrls = [];
-      document.getElementById('previews').innerHTML = '';
-      ['productName','productCategory','productDesc','productPrice','productQty','deliveryType','whatsappLink','productTags'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.value = '';
-      });
-      inStock = true;
-      document.getElementById('stockToggle').className = 'toggle-switch on';
-      calcFee();
-      document.getElementById('submitBtn').disabled = false;
-      document.getElementById('submitBtn').innerHTML = 'Publish Product 🚀';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+      showAlert('✅ Product published successfully! It will be reviewed shortly.', 'success');
 
-    /* ─── TOAST ─── */
-    let toastTimer;
-    function toast(msg, isErr = false, isOk = false) {
-      const el = document.getElementById('toast');
-      el.textContent = msg;
-      el.className = isErr ? 'err show' : isOk ? 'ok show' : 'show';
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => el.className = '', 3500);
+      // Reset form
+      ['name','description','whatsapp_link'].forEach(id => document.getElementById(id).value = '');
+      ['category','delivery_type'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('price').value = '';
+      document.getElementById('quantity').value = '';
+      document.getElementById('in_stock').value = 'true';
+      document.getElementById('tagInput').value = '';
+      tags = [];
+      imageSlots = [];
+      renderTags();
+      renderPreviews();
+
+    } catch (err) {
+      console.error('Unexpected error:', err);
+      showAlert(`Unexpected error: ${err.message}`, 'error');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Publish Product';
     }
-  </script>
+  });
+</script>
 </body>
 </html>
