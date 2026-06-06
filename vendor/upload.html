@@ -1,1 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Upload Product — ProGuides Store</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    :root {
+      --teal:    #1B3A4B;
+      --lime:    #A8D832;
+      --lav:     #C4B5F4;
+      --bg:      #F4F6F3;
+      --white:   #FFFFFF;
+      --muted:   #6B7A74;
+      --border:  #DDE3DD;
+      --danger:  #E05252;
+      --success: #2DB87A;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--teal);
+      min-height: 100vh;
+    }
+
+    /* ── NAV ── */
+    nav {
+      background: var(--teal);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.2rem;
+      color: var(--lime);
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--white); font-weight: 400; }
+    .nav-links { display: flex; gap: 1.5rem; align-items: center; }
+    .nav-links a {
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      font-size: 0.88rem;
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--lime); }
+    .nav-links a.active { color: var(--lime); font-weight: 600; }
+    #logoutBtn {
+      background: transparent;
+      border: 1px solid rgba(168,216,50,0.4);
+      color: var(--lime);
+      padding: .35rem .9rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-family: 'DM Sans', sans-serif;
+      transition: all .2s;
+    }
+    #logoutBtn:hover { background: var(--lime); color: var(--teal); }
+
+    /* ── LAYOUT ── */
+    .page-wrap {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 4rem;
+    }
+
+    .page-header {
+      margin-bottom: 2rem;
+    }
+    .page-header h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+    .page-header p {
+      color: var(--muted);
+      font-size: 0.92rem;
+      margin-top: .4rem;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--white);
+      border-radius: 16px;
+      padding: 2rem;
+      border: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+    }
+    .card-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 1.25rem;
+      padding-bottom: .75rem;
+      border-bottom: 2px solid var(--bg);
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+    .card-title .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--lime);
+      display: inline-block;
+    }
+
+    /* ── FORM FIELDS ── */
+    .field { margin-bottom: 1.25rem; }
+    label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--teal);
+      margin-bottom: .4rem;
+      letter-spacing: .02em;
+      text-transform: uppercase;
+    }
+    label .req { color: var(--danger); margin-left: 2px; }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="url"],
+    select,
+    textarea {
+      width: 100%;
+      padding: .7rem 1rem;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      color: var(--teal);
+      background: var(--bg);
+      transition: border-color .2s, box-shadow .2s;
+      outline: none;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--lime);
+      box-shadow: 0 0 0 3px rgba(168,216,50,0.15);
+      background: var(--white);
+    }
+    textarea { min-height: 100px; resize: vertical; }
+
+    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+
+    /* ── IMAGE UPLOAD ZONE ── */
+    .upload-zone {
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all .25s;
+      background: var(--bg);
+      position: relative;
+    }
+    .upload-zone:hover, .upload-zone.dragover {
+      border-color: var(--lime);
+      background: rgba(168,216,50,0.05);
+    }
+    .upload-zone input[type="file"] {
+      position: absolute; inset: 0;
+      opacity: 0; cursor: pointer;
+      width: 100%; height: 100%;
+    }
+    .upload-icon {
+      font-size: 2rem;
+      margin-bottom: .5rem;
+      display: block;
+    }
+    .upload-zone p {
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+    .upload-zone strong { color: var(--teal); }
+
+    /* ── PREVIEWS ── */
+    #previews {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .75rem;
+      margin-top: 1rem;
+    }
+    .preview-item {
+      position: relative;
+      width: 90px; height: 90px;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 2px solid var(--border);
+      background: var(--bg);
+    }
+    .preview-item img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+    .preview-item .uploading-overlay {
+      position: absolute; inset: 0;
+      background: rgba(27,58,75,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--white);
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+    .preview-item .remove-btn {
+      position: absolute;
+      top: 3px; right: 3px;
+      background: var(--danger);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 20px; height: 20px;
+      font-size: 0.7rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+    .preview-item .done-badge {
+      position: absolute;
+      bottom: 4px; right: 4px;
+      background: var(--success);
+      color: white;
+      border-radius: 50%;
+      width: 18px; height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.6rem;
+    }
+
+    /* ── TAGS ── */
+    .tags-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .4rem;
+      margin-top: .5rem;
+    }
+    .tag-chip {
+      background: var(--teal);
+      color: var(--white);
+      border-radius: 20px;
+      padding: .25rem .75rem;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: .3rem;
+    }
+    .tag-chip button {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.6);
+      cursor: pointer;
+      font-size: 0.75rem;
+      padding: 0;
+      line-height: 1;
+    }
+    .tag-chip button:hover { color: var(--lime); }
+    #tagInput {
+      flex: 1;
+      min-width: 120px;
+      border: none;
+      background: transparent;
+      font-size: 0.9rem;
+      color: var(--teal);
+      outline: none;
+      padding: .3rem .2rem;
+    }
+    .tags-field {
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: .5rem .75rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: .4rem;
+      align-items: center;
+      background: var(--bg);
+      cursor: text;
+      transition: border-color .2s;
+    }
+    .tags-field:focus-within {
+      border-color: var(--lime);
+      box-shadow: 0 0 0 3px rgba(168,216,50,0.15);
+      background: var(--white);
+    }
+    .tag-hint { font-size: 0.78rem; color: var(--muted); margin-top: .3rem; }
+
+    /* ── SUBMIT ── */
+    #submitBtn {
+      width: 100%;
+      padding: 1rem;
+      background: var(--lime);
+      color: var(--teal);
+      border: none;
+      border-radius: 12px;
+      font-family: 'Syne', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .2s;
+      letter-spacing: .02em;
+      margin-top: .5rem;
+    }
+    #submitBtn:hover { background: #96c42a; transform: translateY(-1px); }
+    #submitBtn:disabled {
+      background: var(--border);
+      color: var(--muted);
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* ── ALERTS ── */
+    #alertBox {
+      padding: 1rem 1.25rem;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      margin-bottom: 1.25rem;
+      display: none;
+      animation: fadeIn .3s ease;
+    }
+    #alertBox.success {
+      background: rgba(45,184,122,0.1);
+      border: 1px solid var(--success);
+      color: #1a7a52;
+      display: block;
+    }
+    #alertBox.error {
+      background: rgba(224,82,82,0.1);
+      border: 1px solid var(--danger);
+      color: #9b2828;
+      display: block;
+    }
+
+    /* ── PROGRESS ── */
+    .progress-bar-wrap {
+      background: var(--border);
+      border-radius: 4px;
+      height: 6px;
+      margin-top: .5rem;
+      overflow: hidden;
+      display: none;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--lime);
+      border-radius: 4px;
+      transition: width .3s;
+      width: 0%;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+
+    @media (max-width: 600px) {
+      .row-2, .row-3 { grid-template-columns: 1fr; }
+      .card { padding: 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="../index.html">ProGuides<span> Store</span></a>
+  <div class="nav-links">
+    <a href="dashboard.html">Dashboard</a>
+    <a href="upload.html" class="active">Upload</a>
+    <button id="logoutBtn">Logout</button>
+  </div>
+</nav>
+
+<div class="page-wrap">
+  <div class="page-header">
+    <h1>Upload a Product</h1>
+    <p>Fill in the details below to list your product on ProGuides Store.</p>
+  </div>
+
+  <div id="alertBox"></div>
+
+  <!-- ── BASIC INFO ── -->
+  <div class="card">
+    <div class="card-title"><span class="dot"></span> Basic Information</div>
+
+    <div class="field">
+      <label>Product Name <span class="req">*</span></label>
+      <input type="text" id="name" placeholder="e.g. Ankara Midi Dress"/>
+    </div>
+
+    <div class="row-2">
+      <div class="field">
+        <label>Category <span class="req">*</span></label>
+        <select id="category">
+          <option value="">— Select category —</option>
+          <option>Fashion & Apparel</option>
+          <option>Digital Products</option>
+          <option>Beauty & Skincare</option>
+          <option>Food & Snacks</option>
+          <option>Electronics</option>
+          <option>Home & Living</option>
+          <option>Health & Wellness</option>
+          <option>Books & Education</option>
+          <option>Art & Crafts</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Delivery Type <span class="req">*</span></label>
+        <select id="delivery_type">
+          <option value="">— Select —</option>
+          <option value="physical">Physical (Shipped)</option>
+          <option value="digital">Digital (Instant)</option>
+          <option value="pickup">Pickup Only</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Description <span class="req">*</span></label>
+      <textarea id="description" placeholder="Describe your product — materials, sizes, features..."></textarea>
+    </div>
+  </div>
+
+  <!-- ── PRICING & STOCK ── -->
+  <div class="card">
+    <div class="card-title"><span class="dot"></span> Pricing & Stock</div>
+    <div class="row-3">
+      <div class="field">
+        <label>Price (₦) <span class="req">*</span></label>
+        <input type="number" id="price" placeholder="0.00" min="0" step="0.01"/>
+      </div>
+      <div class="field">
+        <label>Quantity</label>
+        <input type="number" id="quantity" placeholder="e.g. 50" min="0"/>
+      </div>
+      <div class="field">
+        <label>In Stock?</label>
+        <select id="in_stock">
+          <option value="true">Yes</option>
+          <option value="false">No</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CONTACT ── -->
+  <div class="card">
+    <div class="card-title"><span class="dot"></span> Order & Contact</div>
+    <div class="field">
+      <label>WhatsApp Order Link</label>
+      <input type="url" id="whatsapp_link" placeholder="https://wa.me/2348012345678"/>
+    </div>
+    <div class="field">
+      <label>Tags</label>
+      <div class="tags-field" id="tagsField">
+        <div id="tagChips"></div>
+        <input type="text" id="tagInput" placeholder="Type a tag and press Enter…"/>
+      </div>
+      <p class="tag-hint">Press Enter or comma after each tag (e.g. ankara, dress, plus-size)</p>
+    </div>
+  </div>
+
+  <!-- ── IMAGES ── -->
+  <div class="card">
+    <div class="card-title"><span class="dot"></span> Product Images</div>
+    <div class="upload-zone" id="uploadZone">
+      <input type="file" id="imageInput" accept="image/*" multiple/>
+      <span class="upload-icon">🖼️</span>
+      <p><strong>Click to upload</strong> or drag images here</p>
+      <p>JPG, PNG, WEBP — up to 5 images</p>
+    </div>
+    <div class="progress-bar-wrap" id="progressWrap">
+      <div class="progress-bar-fill" id="progressFill"></div>
+    </div>
+    <div id="previews"></div>
+  </div>
+
+  <!-- ── SUBMIT ── -->
+  <button id="submitBtn">Publish Product</button>
+</div>
+
+<!-- ── SUPABASE ── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  // ── CONFIG ──────────────────────────────────────────────
+  const SUPABASE_URL    = 'https://jomsflisyeohejfrvxnf.supabase.co';
+  const SUPABASE_ANON   = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpvbXNmbGlzeWVvaGVqZnJ2eG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2MTY5MTIsImV4cCI6MjA5NjE5MjkxMn0.qaC_PbEIfHJq4ae9gRJxcUV-fgwrXTMEldO6yj66KNY';
+  const CLOUDINARY_NAME = 'dyx08k7ws';
+  const CLOUDINARY_PRESET = 'proguides_products';
+
+  const { createClient } = supabase;
+  const db = createClient(SUPABASE_URL, SUPABASE_ANON);
+
+  // ── SESSION CHECK ────────────────────────────────────────
+  let currentVendor = null;
+
+  (async () => {
+    const stored = localStorage.getItem('proguides_vendor');
+    if (!stored) { window.location.href = 'login.html'; return; }
+    try {
+      currentVendor = JSON.parse(stored);
+    } catch {
+      window.location.href = 'login.html';
+    }
+  })();
+
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    localStorage.removeItem('proguides_vendor');
+    window.location.href = 'login.html';
+  });
+
+  // ── TAGS ────────────────────────────────────────────────
+  let tags = [];
+
+  function renderTags() {
+    const chips = document.getElementById('tagChips');
+    chips.innerHTML = tags.map((t, i) => `
+      <span class="tag-chip">${t}
+        <button type="button" onclick="removeTag(${i})">✕</button>
+      </span>`).join('');
+  }
+
+  function addTag(raw) {
+    const val = raw.trim().replace(/,+$/, '').toLowerCase();
+    if (val && !tags.includes(val) && tags.length < 10) {
+      tags.push(val);
+      renderTags();
+    }
+  }
+
+  window.removeTag = (i) => { tags.splice(i, 1); renderTags(); };
+
+  document.getElementById('tagInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ',') {
+      e.preventDefault();
+      addTag(e.target.value);
+      e.target.value = '';
+    }
+  });
+  document.getElementById('tagInput').addEventListener('blur', (e) => {
+    if (e.target.value.trim()) { addTag(e.target.value); e.target.value = ''; }
+  });
+  document.getElementById('tagsField').addEventListener('click', () => {
+    document.getElementById('tagInput').focus();
+  });
+
+  // ── DRAG & DROP ─────────────────────────────────────────
+  const zone = document.getElementById('uploadZone');
+  zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('dragover'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+  zone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    zone.classList.remove('dragover');
+    handleFiles(e.dataTransfer.files);
+  });
+  document.getElementById('imageInput').addEventListener('change', (e) => handleFiles(e.target.files));
+
+  // ── IMAGE STATE ─────────────────────────────────────────
+  let imageSlots = []; // { file, previewUrl, cloudinaryUrl | null, uploading }
+
+  function handleFiles(fileList) {
+    const allowed = 5 - imageSlots.length;
+    if (allowed <= 0) { showAlert('You can upload up to 5 images.', 'error'); return; }
+    const files = Array.from(fileList).slice(0, allowed);
+    files.forEach(file => {
+      const url = URL.createObjectURL(file);
+      const idx = imageSlots.length;
+      imageSlots.push({ file, previewUrl: url, cloudinaryUrl: null, uploading: true });
+      renderPreviews();
+      uploadToCloudinary(file, idx);
+    });
+  }
+
+  function renderPreviews() {
+    const wrap = document.getElementById('previews');
+    wrap.innerHTML = imageSlots.map((slot, i) => `
+      <div class="preview-item" id="slot-${i}">
+        <img src="${slot.previewUrl}" alt="preview"/>
+        ${slot.uploading
+          ? `<div class="uploading-overlay">Uploading…</div>`
+          : slot.cloudinaryUrl
+            ? `<div class="done-badge">✓</div>`
+            : `<div class="uploading-overlay" style="background:rgba(224,82,82,.7)">Error</div>`
+        }
+        ${!slot.uploading ? `<button class="remove-btn" onclick="removeSlot(${i})">✕</button>` : ''}
+      </div>`).join('');
+  }
+
+  window.removeSlot = (i) => {
+    imageSlots.splice(i, 1);
+    renderPreviews();
+  };
+
+  async function uploadToCloudinary(file, idx) {
+    const progressWrap = document.getElementById('progressWrap');
+    const progressFill = document.getElementById('progressFill');
+    progressWrap.style.display = 'block';
+
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('upload_preset', CLOUDINARY_PRESET);
+    fd.append('folder', 'proguides/products');
+
+    try {
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', `https://api.cloudinary.com/v1_1/${CLOUDINARY_NAME}/image/upload`);
+
+      xhr.upload.onprogress = (e) => {
+        if (e.lengthComputable) {
+          const pct = Math.round((e.loaded / e.total) * 100);
+          progressFill.style.width = pct + '%';
+        }
+      };
+
+      const result = await new Promise((resolve, reject) => {
+        xhr.onload = () => {
+          if (xhr.status === 200) resolve(JSON.parse(xhr.responseText));
+          else reject(new Error(`Cloudinary error ${xhr.status}`));
+        };
+        xhr.onerror = () => reject(new Error('Network error'));
+        xhr.send(fd);
+      });
+
+      imageSlots[idx].cloudinaryUrl = result.secure_url;
+      imageSlots[idx].uploading = false;
+    } catch (err) {
+      console.error('Cloudinary upload failed:', err);
+      imageSlots[idx].uploading = false;
+      imageSlots[idx].cloudinaryUrl = null;
+    }
+    renderPreviews();
+    progressWrap.style.display = 'none';
+    progressFill.style.width = '0%';
+  }
+
+  // ── HELPERS ─────────────────────────────────────────────
+  function showAlert(msg, type = 'error') {
+    const box = document.getElementById('alertBox');
+    box.textContent = msg;
+    box.className = type;
+    box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    if (type === 'success') setTimeout(() => { box.className = ''; box.style.display = 'none'; }, 6000);
+  }
+
+  function val(id) { return document.getElementById(id).value.trim(); }
+
+  // ── SUBMIT ──────────────────────────────────────────────
+  document.getElementById('submitBtn').addEventListener('click', async () => {
+    const btn = document.getElementById('submitBtn');
+
+    // Validation
+    if (!val('name'))          { showAlert('Product name is required.'); return; }
+    if (!val('category'))      { showAlert('Please select a category.'); return; }
+    if (!val('delivery_type')) { showAlert('Please select a delivery type.'); return; }
+    if (!val('description'))   { showAlert('Description is required.'); return; }
+    if (!val('price') || isNaN(parseFloat(val('price')))) { showAlert('A valid price is required.'); return; }
+
+    const stillUploading = imageSlots.some(s => s.uploading);
+    if (stillUploading) { showAlert('Images are still uploading — please wait.'); return; }
+
+    const images = imageSlots.filter(s => s.cloudinaryUrl).map(s => s.cloudinaryUrl);
+
+    // Build payload — match products table schema exactly
+    const payload = {
+      vendor_id:     currentVendor.id,
+      name:          val('name'),
+      category:      val('category'),
+      description:   val('description'),
+      price:         parseFloat(val('price')),
+      quantity:      val('quantity') ? parseInt(val('quantity'), 10) : null,
+      delivery_type: val('delivery_type'),
+      whatsapp_link: val('whatsapp_link') || null,
+      tags:          tags.length > 0 ? tags : null,
+      images:        images.length > 0 ? images : null,
+      in_stock:      document.getElementById('in_stock').value === 'true',
+      status:        'pending',    // pending review by admin
+    };
+
+    btn.disabled = true;
+    btn.textContent = 'Publishing…';
+
+    try {
+      const { data, error } = await db
+        .from('products')
+        .insert([payload])
+        .select();
+
+      if (error) {
+        console.error('Supabase insert error:', error);
+        // Surface the exact error message so it's easy to diagnose
+        showAlert(`Failed to save product: ${error.message || error.details || JSON.stringify(error)}`, 'error');
+        return;
+      }
+
+      showAlert('✅ Product published successfully! It will be reviewed shortly.', 'success');
+
+      // Reset form
+      ['name','description','whatsapp_link'].forEach(id => document.getElementById(id).value = '');
+      ['category','delivery_type'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('price').value = '';
+      document.getElementById('quantity').value = '';
+      document.getElementById('in_stock').value = 'true';
+      document.getElementById('tagInput').value = '';
+      tags = [];
+      imageSlots = [];
+      renderTags();
+      renderPreviews();
+
+    } catch (err) {
+      console.error('Unexpected error:', err);
+      showAlert(`Unexpected error: ${err.message}`, 'error');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Publish Product';
+    }
+  });
+</script>
+</body>
+</html>
