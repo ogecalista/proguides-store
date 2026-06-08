@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Checkout — ProGuides Store</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --teal:    #1B3A4B;
+      --lime:    #A8D832;
+      --lav:     #C4B5F4;
+      --bg:      #F4F6F3;
+      --white:   #FFFFFF;
+      --muted:   #6B7A74;
+      --border:  #DDE3DD;
+      --danger:  #E05252;
+      --success: #2DB87A;
+      --flw:     #F5A623;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--teal);
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    nav {
+      background: var(--teal);
+      padding: 0 2rem;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.2rem;
+      color: var(--lime);
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--white); font-weight: 400; }
+    .nav-back {
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      font-size: 0.88rem;
+      transition: color .2s;
+    }
+    .nav-back:hover { color: var(--lime); }
+
+    /* LAYOUT */
+    .page-wrap {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    /* CARD */
+    .card {
+      background: var(--white);
+      border-radius: 16px;
+      padding: 1.75rem;
+      border: 1px solid var(--border);
+      margin-bottom: 1.25rem;
+    }
+    .card-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 1.25rem;
+      padding-bottom: .75rem;
+      border-bottom: 2px solid var(--bg);
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+    .card-title .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--lime);
+      display: inline-block;
+    }
+
+    /* FORM */
+    .field { margin-bottom: 1.1rem; }
+    label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      margin-bottom: .4rem;
+    }
+    label .req { color: var(--danger); margin-left: 2px; }
+    input, select, textarea {
+      width: 100%;
+      padding: .75rem 1rem;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      color: var(--teal);
+      background: var(--bg);
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--lime);
+      box-shadow: 0 0 0 3px rgba(168,216,50,0.15);
+      background: var(--white);
+    }
+    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+    /* PAYMENT METHOD BANNER */
+    .payment-banner {
+      display: none;
+      align-items: center;
+      gap: .75rem;
+      padding: .85rem 1rem;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-bottom: 1rem;
+      border: 1.5px solid;
+      animation: fadeIn .3s ease;
+    }
+    .payment-banner.nigeria {
+      background: rgba(168,216,50,0.1);
+      border-color: var(--lime);
+      color: #3a5a10;
+      display: flex;
+    }
+    .payment-banner.international {
+      background: rgba(245,166,35,0.1);
+      border-color: var(--flw);
+      color: #7a4f00;
+      display: flex;
+    }
+
+    /* CART ITEMS */
+    .cart-empty {
+      text-align: center;
+      padding: 2rem;
+      color: var(--muted);
+    }
+    .cart-empty .icon { font-size: 2rem; margin-bottom: .5rem; display: block; }
+
+    .cart-item {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      padding: .85rem 0;
+      border-bottom: 1px solid var(--bg);
+    }
+    .cart-item:last-child { border-bottom: none; }
+    .cart-img {
+      width: 60px; height: 60px;
+      border-radius: 10px;
+      object-fit: cover;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .cart-img-placeholder {
+      width: 60px; height: 60px;
+      border-radius: 10px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+    .cart-details { flex: 1; }
+    .cart-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+    .cart-cat { font-size: 0.78rem; color: var(--muted); margin-top: .1rem; }
+    .cart-price { font-size: 0.95rem; font-weight: 600; margin-top: .3rem; }
+
+    .qty-wrap {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+    .qty-btn {
+      width: 28px; height: 28px;
+      border-radius: 6px;
+      border: 1.5px solid var(--border);
+      background: var(--bg);
+      cursor: pointer;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .2s;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .qty-btn:hover { border-color: var(--lime); background: var(--white); }
+    .qty-num { font-size: 0.9rem; font-weight: 600; min-width: 20px; text-align: center; }
+
+    .remove-btn {
+      background: none;
+      border: none;
+      color: var(--danger);
+      cursor: pointer;
+      font-size: 1rem;
+      padding: .25rem;
+      transition: opacity .2s;
+    }
+    .remove-btn:hover { opacity: .7; }
+
+    /* ORDER SUMMARY */
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: .5rem 0;
+      font-size: 0.9rem;
+    }
+    .summary-row.total {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.1rem;
+      border-top: 2px solid var(--bg);
+      padding-top: .85rem;
+      margin-top: .4rem;
+    }
+    .summary-row .label { color: var(--muted); }
+    .summary-row.total .label { color: var(--teal); }
+
+    /* PAY BUTTONS */
+    #payBtn, #payBtnFlw {
+      width: 100%;
+      padding: 1rem;
+      border: none;
+      border-radius: 12px;
+      font-family: 'Syne', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .2s;
+      margin-top: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+    }
+    #payBtn {
+      background: var(--lime);
+      color: var(--teal);
+    }
+    #payBtn:hover { background: #96c42a; transform: translateY(-1px); }
+
+    #payBtnFlw {
+      background: var(--flw);
+      color: #fff;
+      display: none;
+    }
+    #payBtnFlw:hover { background: #e0941a; transform: translateY(-1px); }
+
+    #payBtn:disabled, #payBtnFlw:disabled {
+      background: var(--border);
+      color: var(--muted);
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .secure-note {
+      text-align: center;
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: .75rem;
+    }
+
+    /* ALERT */
+    #alertBox {
+      padding: .85rem 1rem;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      margin-bottom: 1.25rem;
+      display: none;
+      animation: fadeIn .3s ease;
+    }
+    #alertBox.error {
+      background: rgba(224,82,82,0.1);
+      border: 1px solid var(--danger);
+      color: #9b2828;
+      display: block;
+    }
+    #alertBox.success {
+      background: rgba(45,184,122,0.1);
+      border: 1px solid var(--success);
+      color: #1a7a52;
+      display: block;
+    }
+
+    /* SUCCESS SCREEN */
+    #successScreen {
+      display: none;
+      text-align: center;
+      padding: 3rem 2rem;
+    }
+    #successScreen.show { display: block; }
+    .success-icon { font-size: 4rem; margin-bottom: 1rem; display: block; }
+    .success-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 800;
+      margin-bottom: .75rem;
+    }
+    .success-msg { color: var(--muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.5rem; }
+    .btn-home {
+      display: inline-block;
+      padding: .75rem 2rem;
+      background: var(--lime);
+      color: var(--teal);
+      border-radius: 10px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      text-decoration: none;
+      transition: background .2s;
+    }
+    .btn-home:hover { background: #96c42a; }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+
+    @media (max-width: 768px) {
+      .page-wrap { grid-template-columns: 1fr; }
+      .row-2 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">ProGuides<span> Store</span></a>
+  <a class="nav-back" href="index.html">← Back to Store</a>
+</nav>
+
+<div class="page-wrap">
+
+  <!-- LEFT: FORM -->
+  <div>
+    <div id="alertBox"></div>
+
+    <!-- SUCCESS SCREEN -->
+    <div class="card" id="successScreen">
+      <span class="success-icon">🎉</span>
+      <div class="success-title">Order Placed Successfully!</div>
+      <p class="success-msg">Thank you for your order. You will receive a confirmation on WhatsApp shortly. The vendor will contact you to arrange delivery.</p>
+      <a href="index.html" class="btn-home">Continue Shopping</a>
+    </div>
+
+    <!-- CONTACT INFO -->
+    <div class="card" id="formSection">
+      <div class="card-title"><span class="dot"></span> Your Details</div>
+
+      <div class="field">
+        <label>Full Name <span class="req">*</span></label>
+        <input type="text" id="buyer_name" placeholder="e.g. Amina Okoro"/>
+      </div>
+
+      <div class="row-2">
+        <div class="field">
+          <label>Email Address <span class="req">*</span></label>
+          <input type="email" id="buyer_email" placeholder="you@example.com"/>
+        </div>
+        <div class="field">
+          <label>Phone Number <span class="req">*</span></label>
+          <input type="tel" id="buyer_phone" placeholder="08012345678"/>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>WhatsApp Number</label>
+        <input type="tel" id="buyer_whatsapp" placeholder="Same as phone if same"/>
+      </div>
+
+      <!-- COUNTRY SELECTOR -->
+      <div class="field">
+        <label>Country <span class="req">*</span></label>
+        <select id="buyer_country" onchange="onCountryChange()">
+          <option value="">— Select Country —</option>
+          <option value="NG">🇳🇬 Nigeria</option>
+          <optgroup label="Africa">
+            <option value="GH">🇬🇭 Ghana</option>
+            <option value="KE">🇰🇪 Kenya</option>
+            <option value="ZA">🇿🇦 South Africa</option>
+            <option value="EG">🇪🇬 Egypt</option>
+            <option value="TZ">🇹🇿 Tanzania</option>
+            <option value="UG">🇺🇬 Uganda</option>
+            <option value="ET">🇪🇹 Ethiopia</option>
+            <option value="SN">🇸🇳 Senegal</option>
+            <option value="CI">🇨🇮 Côte d'Ivoire</option>
+            <option value="CM">🇨🇲 Cameroon</option>
+            <option value="RW">🇷🇼 Rwanda</option>
+            <option value="ZM">🇿🇲 Zambia</option>
+            <option value="MW">🇲🇼 Malawi</option>
+            <option value="MZ">🇲🇿 Mozambique</option>
+            <option value="AO">🇦🇴 Angola</option>
+          </optgroup>
+          <optgroup label="Rest of World">
+            <option value="GB">🇬🇧 United Kingdom</option>
+            <option value="US">🇺🇸 United States</option>
+            <option value="CA">🇨🇦 Canada</option>
+            <option value="DE">🇩🇪 Germany</option>
+            <option value="FR">🇫🇷 France</option>
+            <option value="IT">🇮🇹 Italy</option>
+            <option value="ES">🇪🇸 Spain</option>
+            <option value="NL">🇳🇱 Netherlands</option>
+            <option value="AU">🇦🇺 Australia</option>
+            <option value="AE">🇦🇪 UAE</option>
+            <option value="OTHER">🌍 Other</option>
+          </optgroup>
+        </select>
+      </div>
+    </div>
+
+    <!-- DELIVERY INFO -->
+    <div class="card" id="deliverySection">
+      <div class="card-title"><span class="dot"></span> Delivery Information</div>
+
+      <div class="field">
+        <label>Delivery Address <span class="req">*</span></label>
+        <input type="text" id="delivery_address" placeholder="e.g. 12 Allen Avenue, Ikeja"/>
+      </div>
+
+      <div class="row-2">
+        <div class="field">
+          <label>City <span class="req">*</span></label>
+          <input type="text" id="delivery_city" placeholder="e.g. Lagos"/>
+        </div>
+
+        <!-- Nigeria: State dropdown | International: free text -->
+        <div class="field" id="stateFieldWrap">
+          <label>State / Region <span class="req">*</span></label>
+          <select id="delivery_state">
+            <option value="">— Select State —</option>
+            <option>Abia</option><option>Adamawa</option><option>Akwa Ibom</option>
+            <option>Anambra</option><option>Bauchi</option><option>Bayelsa</option>
+            <option>Benue</option><option>Borno</option><option>Cross River</option>
+            <option>Delta</option><option>Ebonyi</option><option>Edo</option>
+            <option>Ekiti</option><option>Enugu</option><option>FCT Abuja</option>
+            <option>Gombe</option><option>Imo</option><option>Jigawa</option>
+            <option>Kaduna</option><option>Kano</option><option>Katsina</option>
+            <option>Kebbi</option><option>Kogi</option><option>Kwara</option>
+            <option>Lagos</option><option>Nasarawa</option><option>Niger</option>
+            <option>Ogun</option><option>Ondo</option><option>Osun</option>
+            <option>Oyo</option><option>Plateau</option><option>Rivers</option>
+            <option>Sokoto</option><option>Taraba</option><option>Yobe</option><option>Zamfara</option>
+          </select>
+          <input type="text" id="delivery_region" placeholder="e.g. Nairobi County" style="display:none"/>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Order Notes (Optional)</label>
+        <input type="text" id="notes" placeholder="Any special instructions for the vendor…"/>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: ORDER SUMMARY -->
+  <div>
+    <div class="card">
+      <div class="card-title"><span class="dot"></span> Your Order</div>
+      <div id="cartItems">
+        <div class="cart-empty">
+          <span class="icon">🛒</span>
+          <p>Your cart is empty. <a href="index.html">Shop now →</a></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="dot"></span> Order Summary</div>
+      <div class="summary-row">
+        <span class="label">Subtotal</span>
+        <span id="subtotal">₦0</span>
+      </div>
+      <div class="summary-row">
+        <span class="label">Delivery Fee</span>
+        <span id="deliveryFee">₦0</span>
+      </div>
+      <div class="summary-row">
+        <span class="label">Platform Fee (5%)</span>
+        <span id="platformFee">₦0</span>
+      </div>
+      <div class="summary-row total">
+        <span class="label">Total</span>
+        <span id="total">₦0</span>
+      </div>
+
+      <!-- Payment banner -->
+      <div class="payment-banner nigeria" id="bannerNG">
+        🇳🇬 Nigerian payment — secured by <strong>Paystack</strong>
+      </div>
+      <div class="payment-banner international" id="bannerINTL">
+        🌍 International payment — secured by <strong>Flutterwave</strong>
+      </div>
+
+      <!-- Paystack button (Nigeria) -->
+      <button id="payBtn">💳 Pay with Paystack</button>
+
+      <!-- Flutterwave button (International) -->
+      <button id="payBtnFlw">🌍 Pay with Flutterwave</button>
+
+      <p class="secure-note" id="secureNote">🔒 Select your country to continue</p>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://js.paystack.co/v1/inline.js"></script>
+<script src="https://checkout.flutterwave.com/v3.js"></script>
+<script>
+  const SUPABASE_URL      = 'https://jomsflisyeohejfrvxnf.supabase.co';
+  const SUPABASE_ANON     = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpvbXNmbGlzeWVvaGVqZnJ2eG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2MTY5MTIsImV4cCI6MjA5NjE5MjkxMn0.qaC_PbEIfHJq4ae9gRJxcUV-fgwrXTMEldO6yj66KNY';
+  const PAYSTACK_KEY      = 'pk_test_73571cf919f94f3810361ba64eb22991991ac48e';
+  const FLUTTERWAVE_KEY   = 'FLWPUBK_TEST-cb0a4c95f87dc69c415d5b18353b1b69-X';
+  const PLATFORM_FEE_PC   = 0.05;
+  const DELIVERY_FEE_NG   = 1500;   // ₦1500 for Nigeria
+  const DELIVERY_FEE_INTL = 5000;   // ₦5000 for international
+
+  // Currency map per country code
+  const CURRENCY_MAP = {
+    NG: { code: 'NGN', symbol: '₦', deliveryFee: DELIVERY_FEE_NG },
+    GH: { code: 'GHS', symbol: 'GH₵', deliveryFee: 50 },
+    KE: { code: 'KES', symbol: 'KSh', deliveryFee: 800 },
+    ZA: { code: 'ZAR', symbol: 'R',   deliveryFee: 200 },
+    UG: { code: 'UGX', symbol: 'USh', deliveryFee: 30000 },
+    TZ: { code: 'TZS', symbol: 'TSh', deliveryFee: 15000 },
+    RW: { code: 'RWF', symbol: 'Fr',  deliveryFee: 5000 },
+    GB: { code: 'GBP', symbol: '£',   deliveryFee: 20 },
+    US: { code: 'USD', symbol: '$',   deliveryFee: 30 },
+    CA: { code: 'CAD', symbol: 'CA$', deliveryFee: 30 },
+    AE: { code: 'AED', symbol: 'د.إ', deliveryFee: 50 },
+  };
+
+  // Default fallback for countries not in map
+  const DEFAULT_CURRENCY = { code: 'USD', symbol: '$', deliveryFee: 30 };
+
+  const { createClient } = supabase;
+  const db = createClient(SUPABASE_URL, SUPABASE_ANON);
+
+  let cart = [];
+  let isNigeria = false;
+
+  // ── COUNTRY CHANGE ──────────────────────────────────────
+  function onCountryChange() {
+    const country = document.getElementById('buyer_country').value;
+    isNigeria = country === 'NG';
+
+    const stateSelect = document.getElementById('delivery_state');
+    const regionInput = document.getElementById('delivery_region');
+    const bannerNG    = document.getElementById('bannerNG');
+    const bannerINTL  = document.getElementById('bannerINTL');
+    const payBtn      = document.getElementById('payBtn');
+    const payBtnFlw   = document.getElementById('payBtnFlw');
+    const secureNote  = document.getElementById('secureNote');
+
+    if (!country) {
+      // No country selected
+      payBtn.style.display    = 'flex';
+      payBtnFlw.style.display = 'none';
+      payBtn.disabled         = true;
+      bannerNG.style.display  = 'none';
+      bannerINTL.style.display= 'none';
+      secureNote.textContent  = '🔒 Select your country to continue';
+      stateSelect.style.display = 'block';
+      regionInput.style.display = 'none';
+      return;
+    }
+
+    if (isNigeria) {
+      payBtn.style.display    = 'flex';
+      payBtnFlw.style.display = 'none';
+      payBtn.disabled         = cart.length === 0;
+      bannerNG.style.display  = 'flex';
+      bannerINTL.style.display= 'none';
+      secureNote.textContent  = '🔒 Secured by Paystack · Your payment is safe';
+      stateSelect.style.display = 'block';
+      regionInput.style.display = 'none';
+    } else {
+      payBtn.style.display    = 'none';
+      payBtnFlw.style.display = 'flex';
+      payBtnFlw.disabled      = cart.length === 0;
+      bannerNG.style.display  = 'none';
+      bannerINTL.style.display= 'flex';
+      secureNote.textContent  = '🔒 Secured by Flutterwave · Your payment is safe';
+      stateSelect.style.display = 'none';
+      regionInput.style.display = 'block';
+    }
+
+    updateSummary();
+  }
+
+  // ── CART ────────────────────────────────────────────────
+  function loadCart() {
+    const stored = localStorage.getItem('proguides_cart');
+    if (stored) {
+      try { cart = JSON.parse(stored); } catch { cart = []; }
+    }
+    renderCart();
+    updateSummary();
+    onCountryChange(); // init payment buttons
+  }
+
+  function saveCart() {
+    localStorage.setItem('proguides_cart', JSON.stringify(cart));
+  }
+
+  function renderCart() {
+    const wrap = document.getElementById('cartItems');
+    if (!cart.length) {
+      wrap.innerHTML = `<div class="cart-empty"><span class="icon">🛒</span><p>Your cart is empty. <a href="index.html">Shop now →</a></p></div>`;
+      document.getElementById('payBtn').disabled    = true;
+      document.getElementById('payBtnFlw').disabled = true;
+      return;
+    }
+
+    wrap.innerHTML = cart.map((item, i) => {
+      const img = item.image
+        ? `<img class="cart-img" src="${item.image}" alt="${item.name}"/>`
+        : `<div class="cart-img-placeholder">🛍️</div>`;
+      return `
+        <div class="cart-item">
+          ${img}
+          <div class="cart-details">
+            <div class="cart-name">${item.name}</div>
+            <div class="cart-cat">${item.category || ''}</div>
+            <div class="cart-price">₦${Number(item.price).toLocaleString()}</div>
+          </div>
+          <div class="qty-wrap">
+            <button class="qty-btn" onclick="changeQty(${i}, -1)">−</button>
+            <span class="qty-num">${item.qty}</span>
+            <button class="qty-btn" onclick="changeQty(${i}, 1)">+</button>
+          </div>
+          <button class="remove-btn" onclick="removeItem(${i})">🗑</button>
+        </div>`;
+    }).join('');
+  }
+
+  function changeQty(idx, delta) {
+    cart[idx].qty += delta;
+    if (cart[idx].qty <= 0) cart.splice(idx, 1);
+    saveCart();
+    renderCart();
+    updateSummary();
+  }
+
+  function removeItem(idx) {
+    cart.splice(idx, 1);
+    saveCart();
+    renderCart();
+    updateSummary();
+  }
+
+  function getCurrencyInfo() {
+    const country = document.getElementById('buyer_country').value;
+    return CURRENCY_MAP[country] || DEFAULT_CURRENCY;
+  }
+
+  function updateSummary() {
+    const subtotal    = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+    const currInfo    = getCurrencyInfo();
+    const delivery    = cart.length > 0 ? currInfo.deliveryFee : 0;
+    const platformFee = Math.round(subtotal * PLATFORM_FEE_PC);
+    const total       = subtotal + delivery;
+    const sym         = isNigeria ? '₦' : currInfo.symbol;
+
+    document.getElementById('subtotal').textContent     = `₦${subtotal.toLocaleString()}`;
+    document.getElementById('deliveryFee').textContent  = `${sym}${delivery.toLocaleString()}`;
+    document.getElementById('platformFee').textContent  = `₦${platformFee.toLocaleString()}`;
+    document.getElementById('total').textContent        = isNigeria
+      ? `₦${total.toLocaleString()}`
+      : `₦${subtotal.toLocaleString()} + ${sym}${delivery.toLocaleString()} delivery`;
+  }
+
+  // ── HELPERS ─────────────────────────────────────────────
+  function val(id) { return document.getElementById(id).value.trim(); }
+
+  function showAlert(msg, type = 'error') {
+    const box = document.getElementById('alertBox');
+    box.textContent = msg;
+    box.className = type;
+    box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function generateOrderNumber() {
+    return 'PGS' + Date.now().toString().slice(-8);
+  }
+
+  function getStateOrRegion() {
+    const stateSelect = document.getElementById('delivery_state');
+    const regionInput = document.getElementById('delivery_region');
+    return isNigeria ? stateSelect.value : regionInput.value;
+  }
+
+  // ── VALIDATE ────────────────────────────────────────────
+  function validate() {
+    if (!cart.length)              { showAlert('Your cart is empty.'); return false; }
+    if (!val('buyer_name'))        { showAlert('Please enter your full name.'); return false; }
+    if (!val('buyer_email'))       { showAlert('Please enter your email address.'); return false; }
+    if (!val('buyer_phone'))       { showAlert('Please enter your phone number.'); return false; }
+    if (!val('buyer_country'))     { showAlert('Please select your country.'); return false; }
+    if (!val('delivery_address'))  { showAlert('Please enter your delivery address.'); return false; }
+    if (!val('delivery_city'))     { showAlert('Please enter your city.'); return false; }
+    if (!getStateOrRegion())       { showAlert('Please enter your state or region.'); return false; }
+    return true;
+  }
+
+  // ── PAYSTACK (NIGERIA) ──────────────────────────────────
+  document.getElementById('payBtn').addEventListener('click', () => {
+    if (!validate()) return;
+
+    const subtotal = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+    const total    = subtotal + DELIVERY_FEE_NG;
+    const email    = val('buyer_email');
+
+    const handler = PaystackPop.setup({
+      key:      PAYSTACK_KEY,
+      email:    email,
+      amount:   total * 100,
+      currency: 'NGN',
+      ref:      generateOrderNumber(),
+      metadata: {
+        custom_fields: [
+          { display_name: 'Customer Name',  variable_name: 'buyer_name',  value: val('buyer_name') },
+          { display_name: 'Phone Number',   variable_name: 'buyer_phone', value: val('buyer_phone') }
+        ]
+      },
+      callback: function(response) {
+        saveOrder(response.reference, total, subtotal, 'paystack', 'NGN');
+      },
+      onClose: function() {
+        showAlert('Payment cancelled. Your order was not placed.');
+      }
+    });
+
+    handler.openIframe();
+  });
+
+  // ── FLUTTERWAVE (INTERNATIONAL) ─────────────────────────
+  document.getElementById('payBtnFlw').addEventListener('click', () => {
+    if (!validate()) return;
+
+    const subtotal   = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+    const currInfo   = getCurrencyInfo();
+    const orderRef   = generateOrderNumber();
+
+    // Flutterwave charges in the selected currency
+    // We pass NGN subtotal amount — Flutterwave will convert at checkout
+    FlutterwaveCheckout({
+      public_key:   FLUTTERWAVE_KEY,
+      tx_ref:       orderRef,
+      amount:       subtotal + currInfo.deliveryFee,
+      currency:     currInfo.code,
+      payment_options: 'card,mobilemoney,ussd',
+      customer: {
+        email:        val('buyer_email'),
+        phone_number: val('buyer_phone'),
+        name:         val('buyer_name'),
+      },
+      meta: {
+        consumer_id:      orderRef,
+        consumer_mac:     'flw_checkout',
+        delivery_address: val('delivery_address'),
+        delivery_city:    val('delivery_city'),
+        country:          val('buyer_country'),
+      },
+      customizations: {
+        title:       'ProGuides Store',
+        description: `Order from ProGuides Store — ${cart.length} item(s)`,
+        logo:        'https://store.proguides.world/assets/logo.png',
+      },
+      callback: function(response) {
+        if (response.status === 'successful' || response.status === 'completed') {
+          const totalNGN = subtotal; // record NGN subtotal in DB
+          saveOrder(response.transaction_id || orderRef, totalNGN, subtotal, 'flutterwave', currInfo.code);
+        } else {
+          showAlert('Payment was not completed. Please try again.');
+        }
+      },
+      onclose: function() {
+        showAlert('Payment cancelled. Your order was not placed.');
+      }
+    });
+  });
+
+  // ── WHATSAPP VENDOR NOTIFICATION ───────────────────────
+  async function notifyVendor(reference, total, order, gateway, currency) {
+    try {
+      const { data: vendor } = await db
+        .from('vendors')
+        .select('whatsapp, phone, store_name')
+        .eq('id', order.vendor_id)
+        .single();
+
+      if (!vendor) return;
+
+      const waNumber = (vendor.whatsapp || vendor.phone || '').replace(/\D/g, '');
+      if (!waNumber) return;
+
+      const items = cart.length > 0
+        ? cart.map(i => `• ${i.name} x${i.qty} — ₦${Number(i.price * i.qty).toLocaleString()}`).join('\n')
+        : 'See order details';
+
+      const paymentLine = gateway === 'flutterwave'
+        ? `*Payment Gateway:* 🌍 Flutterwave (${currency})`
+        : `*Payment Gateway:* 🇳🇬 Paystack (NGN)`;
+
+      const msg = `🛍️ *New Order on ProGuides Store!*\n\n`
+        + `*Order Ref:* ${reference}\n`
+        + `*Customer:* ${order.buyer_name}\n`
+        + `*Phone:* ${order.buyer_phone}\n`
+        + `*WhatsApp:* ${order.buyer_whatsapp || order.buyer_phone}\n`
+        + `*Country:* ${order.buyer_country}\n\n`
+        + `*Items:*\n${items}\n\n`
+        + `*Delivery Address:* ${order.delivery_address}, ${order.delivery_city}, ${order.delivery_state}\n\n`
+        + `*Total (NGN):* ₦${Number(total).toLocaleString()}\n`
+        + `${paymentLine}\n`
+        + `*Payment Status:* ✅ PAID\n\n`
+        + `Please contact the customer to arrange delivery.`;
+
+      const waLink = `https://wa.me/${waNumber}?text=${encodeURIComponent(msg)}`;
+      window.open(waLink, '_blank');
+
+    } catch (err) {
+      console.error('WhatsApp notification error:', err);
+    }
+  }
+
+  // ── SAVE ORDER ──────────────────────────────────────────
+  async function saveOrder(reference, total, subtotal, gateway, currency) {
+    const btn    = gateway === 'paystack' ? document.getElementById('payBtn') : document.getElementById('payBtnFlw');
+    btn.disabled = true;
+    btn.textContent = 'Saving order…';
+
+    const vendorId = cart[0]?.vendor_id || null;
+
+    const payload = {
+      order_number:       reference,
+      vendor_id:          vendorId,
+      buyer_name:         val('buyer_name'),
+      buyer_email:        val('buyer_email'),
+      buyer_phone:        val('buyer_phone'),
+      buyer_whatsapp:     val('buyer_whatsapp') || val('buyer_phone'),
+      buyer_country:      val('buyer_country'),
+      delivery_address:   val('delivery_address'),
+      delivery_city:      val('delivery_city'),
+      delivery_state:     getStateOrRegion(),
+      items:              JSON.stringify(cart),
+      subtotal:           subtotal,
+      delivery_fee:       isNigeria ? DELIVERY_FEE_NG : getCurrencyInfo().deliveryFee,
+      total:              total,
+      payment_status:     'paid',
+      payment_reference:  reference,
+      payment_gateway:    gateway,
+      payment_currency:   currency,
+      order_status:       'pending',
+      notes:              val('notes') || null,
+    };
+
+    try {
+      const { error } = await db.from('orders').insert([payload]);
+
+      if (error) {
+        console.error('Order save error:', error);
+        showAlert(`Payment received but order save failed: ${error.message}. Contact support with reference: ${reference}`);
+        return;
+      }
+
+      localStorage.removeItem('proguides_cart');
+      cart = [];
+
+      await notifyVendor(reference, total, payload, gateway, currency);
+
+      document.getElementById('formSection').style.display    = 'none';
+      document.getElementById('deliverySection').style.display = 'none';
+      document.getElementById('successScreen').className = 'card show';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    } catch (err) {
+      console.error(err);
+      showAlert(`Unexpected error: ${err.message}. Your payment reference is ${reference} — contact support.`);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = gateway === 'paystack' ? '💳 Pay with Paystack' : '🌍 Pay with Flutterwave';
+    }
+  }
+
+  // ── INIT ───────────────────────────────────────────────
+  loadCart();
+</script>
+</body>
+</html>
