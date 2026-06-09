@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vendor Signup — ProGuides Store</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --teal:   #1B3A4B;
+      --lime:   #A8D832;
+      --bg:     #F4F6F3;
+      --white:  #FFFFFF;
+      --muted:  #6B7A74;
+      --border: #DDE3DD;
+      --danger: #E05252;
+      --success:#2DB87A;
+    }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--teal); min-height: 100vh; }
+    nav { background: var(--teal); padding: 0 2rem; height: 60px; display: flex; align-items: center; justify-content: space-between; }
+    .nav-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.2rem; color: var(--lime); text-decoration: none; }
+    .nav-logo span { color: #fff; font-weight: 400; }
+    .nav-link { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.88rem; transition: color .2s; }
+    .nav-link:hover { color: var(--lime); }
+    .page-wrap { max-width: 600px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+    .page-header { text-align: center; margin-bottom: 2rem; }
+    .page-header .icon { width: 56px; height: 56px; background: var(--teal); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 1.5rem; }
+    .page-header h1 { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; }
+    .page-header p { color: var(--muted); font-size: 0.9rem; margin-top: .4rem; }
+    .card { background: var(--white); border-radius: 16px; padding: 2rem; border: 1px solid var(--border); margin-bottom: 1.5rem; }
+    .card-title { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: 1.25rem; padding-bottom: .75rem; border-bottom: 2px solid var(--bg); display: flex; align-items: center; gap: .5rem; }
+    .card-title .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--lime); display: inline-block; }
+    .field { margin-bottom: 1.25rem; }
+    label { display: block; font-size: 0.8rem; font-weight: 500; text-transform: uppercase; letter-spacing: .04em; margin-bottom: .4rem; }
+    label .req { color: var(--danger); margin-left: 2px; }
+    input, select, textarea { width: 100%; padding: .75rem 1rem; border: 1.5px solid var(--border); border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 0.95rem; color: var(--teal); background: var(--bg); outline: none; transition: border-color .2s, box-shadow .2s; }
+    input:focus, select:focus, textarea:focus { border-color: var(--lime); box-shadow: 0 0 0 3px rgba(168,216,50,0.15); background: var(--white); }
+    textarea { min-height: 90px; resize: vertical; }
+    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .slug-wrap { position: relative; }
+    .slug-prefix { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); font-size: 0.88rem; color: var(--muted); pointer-events: none; }
+    .slug-wrap input { padding-left: 5.5rem; }
+    .pw-wrap { position: relative; }
+    .pw-wrap input { padding-right: 3rem; }
+    .eye-btn { position: absolute; right: .75rem; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 1.1rem; color: var(--muted); padding: 0; }
+    .hint { font-size: 0.78rem; color: var(--muted); margin-top: .3rem; }
+    #alertBox { padding: .85rem 1rem; border-radius: 8px; font-size: 0.88rem; margin-bottom: 1.25rem; display: none; animation: fadeIn .3s ease; }
+    #alertBox.error { background: rgba(224,82,82,0.1); border: 1px solid var(--danger); color: #9b2828; display: block; }
+    #alertBox.success { background: rgba(45,184,122,0.1); border: 1px solid var(--success); color: #1a7a52; display: block; }
+    #submitBtn { width: 100%; padding: .9rem; background: var(--lime); color: var(--teal); border: none; border-radius: 12px; font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all .2s; margin-top: .5rem; }
+    #submitBtn:hover { background: #96c42a; transform: translateY(-1px); }
+    #submitBtn:disabled { background: var(--border); color: var(--muted); cursor: not-allowed; transform: none; }
+    .login-link { text-align: center; font-size: 0.88rem; color: var(--muted); margin-top: 1.25rem; }
+    .login-link a { color: var(--teal); font-weight: 600; text-decoration: none; }
+    .login-link a:hover { color: var(--lime); }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+    @media (max-width: 500px) { .row-2 { grid-template-columns: 1fr; } .card { padding: 1.25rem; } }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="../index.html">ProGuides<span> Store</span></a>
+  <a class="nav-link" href="login.html">Already a vendor? Sign in →</a>
+</nav>
+
+<div class="page-wrap">
+  <div class="page-header">
+    <div class="icon">🛍️</div>
+    <h1>Apply to Sell</h1>
+    <p>Create your vendor account and start selling on ProGuides Store.</p>
+  </div>
+
+  <div id="alertBox"></div>
+
+  <!-- PERSONAL INFO -->
+  <div class="card">
+    <div class="card-title"><span class="dot"></span> Personal Information</div>
+    <div class="field">
+      <label>Full Name <span class="req">*</span></label>
+      <input type="text" id="full_name" placeholder="e.g. Amina Okoro"/>
+    </div>
+    <div class="row-2">
+      <div class="field">
+        <label>Email Address <span class="req">*</span></label>
+        <input type="email" id="email" placeholder="you@example.com"/>
+      </div>
+      <div class="field">
+        <label>Phone Number <span class="req">*</span></label>
+        <input type="tel" id="phone_num" placeholder="08012345678"/>
+      </div>
+    </div>
+    <div class="field">
+      <label>WhatsApp Number</label>
+      <input type="tel" id="whatsapp" placeholder="08012345678 (if different from phone)"/>
+    </div>
+    <div class="field">
+      <label>Password <span class="req">*</span></label>
+      <div class="pw-wrap">
+        <input type="password" id="password" placeholder="Create a password"/>
+        <button type="button" class="eye-btn" onclick="toggleEye('password', this)">👁</button>
+      </div>
+      <p class="hint">Minimum 6 characters</p>
+    </div>
+  </div>
+
+  <!-- STORE INFO -->
+  <div class="card">
+    <div class="card-title"><span class="dot"></span> Store Information</div>
+    <div class="field">
+      <label>Store Name <span class="req">*</span></label>
+      <input type="text" id="store_name" placeholder="e.g. Amina's Boutique" oninput="autoSlug()"/>
+    </div>
+    <div class="field">
+      <label>Store URL Slug <span class="req">*</span></label>
+      <div class="slug-wrap">
+        <span class="slug-prefix">proguides/</span>
+        <input type="text" id="store_slug" placeholder="aminas-boutique"/>
+      </div>
+      <p class="hint">Auto-filled from store name. Letters, numbers, hyphens only.</p>
+    </div>
+    <div class="field">
+      <label>Store Category <span class="req">*</span></label>
+      <select id="category">
+        <option value="">— Select your main category —</option>
+        <option>Fashion & Apparel</option>
+        <option>Digital Products</option>
+        <option>Beauty & Skincare</option>
+        <option>Food & Snacks</option>
+        <option>Electronics</option>
+        <option>Home & Living</option>
+        <option>Health & Wellness</option>
+        <option>Books & Education</option>
+        <option>Art & Crafts</option>
+        <option>Other</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Store Description</label>
+      <textarea id="store_description" placeholder="Tell customers what you sell and what makes your store special…"></textarea>
+    </div>
+  </div>
+
+  <!-- BANK INFO -->
+  <div class="card">
+    <div class="card-title"><span class="dot"></span> Bank Details (for payouts)</div>
+    <div class="field">
+      <label>Bank Name <span class="req">*</span></label>
+      <select id="bank_name">
+        <option value="">— Select your bank —</option>
+        <option>Access Bank</option><option>Fidelity Bank</option><option>First Bank</option>
+        <option>GTBank</option><option>Kuda Bank</option><option>Moniepoint</option>
+        <option>OPay</option><option>Palmpay</option><option>Polaris Bank</option>
+        <option>Sterling Bank</option><option>UBA</option><option>Union Bank</option>
+        <option>Wema Bank</option><option>Zenith Bank</option><option>Other</option>
+      </select>
+    </div>
+    <div class="row-2">
+      <div class="field">
+        <label>Account Number <span class="req">*</span></label>
+        <input type="text" id="acct_num" placeholder="0123456789" maxlength="10"/>
+      </div>
+      <div class="field">
+        <label>Account Name <span class="req">*</span></label>
+        <input type="text" id="acct_name" placeholder="As on your bank account"/>
+      </div>
+    </div>
+  </div>
+
+  <button id="submitBtn">Create Vendor Account</button>
+  <p class="login-link">Already have an account? <a href="login.html">Sign in →</a></p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL  = 'https://jomsflisyeohejfrvxnf.supabase.co';
+  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpvbXNmbGlzeWVvaGVqZnJ2eG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2MTY5MTIsImV4cCI6MjA5NjE5MjkxMn0.qaC_PbEIfHJq4ae9gRJxcUV-fgwrXTMEldO6yj66KNY';
+  const { createClient } = supabase;
+  const db = createClient(SUPABASE_URL, SUPABASE_ANON);
+
+  // Redirect if already logged in
+  db.auth.getSession().then(({ data: { session } }) => {
+    if (session) window.location.href = 'dashboard.html';
+  });
+
+  function autoSlug() {
+    const name = document.getElementById('store_name').value;
+    const slug = name.toLowerCase().replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-');
+    document.getElementById('store_slug').value = slug;
+  }
+
+  function toggleEye(fieldId, btn) {
+    const input = document.getElementById(fieldId);
+    input.type = input.type === 'password' ? 'text' : 'password';
+    btn.textContent = input.type === 'password' ? '👁' : '🙈';
+  }
+
+  function val(id) { return document.getElementById(id).value.trim(); }
+
+  function showAlert(msg, type = 'error') {
+    const box = document.getElementById('alertBox');
+    box.textContent = msg;
+    box.className = type;
+    box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  document.getElementById('submitBtn').addEventListener('click', async () => {
+    const btn = document.getElementById('submitBtn');
+
+    if (!val('full_name'))          { showAlert('Full name is required.'); return; }
+    if (!val('email'))              { showAlert('Email address is required.'); return; }
+    if (!val('phone_num'))          { showAlert('Phone number is required.'); return; }
+    if (!val('password'))           { showAlert('Password is required.'); return; }
+    if (val('password').length < 6) { showAlert('Password must be at least 6 characters.'); return; }
+    if (!val('store_name'))         { showAlert('Store name is required.'); return; }
+    if (!val('store_slug'))         { showAlert('Store slug is required.'); return; }
+    if (!val('category'))           { showAlert('Please select a store category.'); return; }
+    if (!val('bank_name'))          { showAlert('Please select your bank.'); return; }
+    if (!val('acct_num'))           { showAlert('Account number is required.'); return; }
+    if (!val('acct_name'))          { showAlert('Account name is required.'); return; }
+
+    btn.disabled = true;
+    btn.textContent = 'Creating account…';
+
+    try {
+      // Check slug not taken
+      const { data: slugCheck } = await db
+        .from('vendors')
+        .select('id')
+        .eq('store_slug', val('store_slug'))
+        .single();
+
+      if (slugCheck) {
+        showAlert('That store slug is already taken. Please choose a different store name.');
+        return;
+      }
+
+      // Step 1: Create Supabase Auth user
+      const { data: authData, error: authError } = await db.auth.signUp({
+        email:    val('email'),
+        password: val('password'),
+        options: {
+          data: {
+            full_name:  val('full_name'),
+            store_name: val('store_name'),
+            role:       'vendor'
+          }
+        }
+      });
+
+      if (authError) {
+        showAlert(`Registration failed: ${authError.message}`);
+        return;
+      }
+
+      const userId = authData.user?.id;
+      if (!userId) {
+        showAlert('Could not create account. Please try again.');
+        return;
+      }
+
+      // Step 2: Save vendor profile in vendors table
+      const payload = {
+        user_id:           userId,
+        full_name:         val('full_name'),
+        email:             val('email'),
+        phone:             val('phone_num'),
+        whatsapp:          val('whatsapp') || val('phone_num'),
+        store_name:        val('store_name'),
+        store_slug:        val('store_slug'),
+        category:          val('category'),
+        store_description: val('store_description') || null,
+        bank_name:         val('bank_name'),
+        account_number:    val('acct_num'),
+        account_name:      val('acct_name'),
+        is_approved:       false,
+        is_active:         false,
+        status:            'pending',
+        commission_rate:   5,
+      };
+
+      const { data: vendorData, error: vendorError } = await db
+        .from('vendors')
+        .insert([payload])
+        .select()
+        .single();
+
+      if (vendorError) {
+        showAlert(`Profile save failed: ${vendorError.message}`);
+        return;
+      }
+
+      showAlert('✅ Account created! Please check your email to verify, then sign in.', 'success');
+      setTimeout(() => { window.location.href = 'login.html'; }, 2500);
+
+    } catch (err) {
+      showAlert(`Something went wrong: ${err.message}`);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Create Vendor Account';
+    }
+  });
+</script>
+</body>
+</html>
