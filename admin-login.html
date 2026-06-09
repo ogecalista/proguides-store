@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Login — ProGuides Store</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --teal:   #1B3A4B;
+      --lime:   #A8D832;
+      --bg:     #F4F6F3;
+      --white:  #FFFFFF;
+      --muted:  #6B7A74;
+      --border: #DDE3DD;
+      --danger: #E05252;
+      --success:#2DB87A;
+    }
+    body { font-family: 'DM Sans', sans-serif; background: var(--teal); color: var(--teal); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+    .login-wrap { width: 100%; max-width: 420px; }
+    .login-header { text-align: center; margin-bottom: 2rem; }
+    .login-header .icon { width: 64px; height: 64px; background: var(--lime); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 1.8rem; }
+    .login-header h1 { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; color: #fff; }
+    .login-header p { color: rgba(255,255,255,0.6); font-size: 0.88rem; margin-top: .4rem; }
+    .card { background: var(--white); border-radius: 20px; padding: 2rem; }
+    .field { margin-bottom: 1.25rem; }
+    label { display: block; font-size: 0.8rem; font-weight: 500; text-transform: uppercase; letter-spacing: .04em; margin-bottom: .4rem; color: var(--teal); }
+    input { width: 100%; padding: .75rem 1rem; border: 1.5px solid var(--border); border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 0.95rem; color: var(--teal); background: var(--bg); outline: none; transition: border-color .2s, box-shadow .2s; }
+    input:focus { border-color: var(--lime); box-shadow: 0 0 0 3px rgba(168,216,50,0.15); background: var(--white); }
+    #alertBox { padding: .85rem 1rem; border-radius: 8px; font-size: 0.88rem; margin-bottom: 1.25rem; display: none; animation: fadeIn .3s ease; }
+    #alertBox.error { background: rgba(224,82,82,0.1); border: 1px solid var(--danger); color: #9b2828; display: block; }
+    #alertBox.success { background: rgba(45,184,122,0.1); border: 1px solid var(--success); color: #1a7a52; display: block; }
+    #loginBtn { width: 100%; padding: .9rem; background: var(--teal); color: #fff; border: none; border-radius: 12px; font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all .2s; margin-top: .5rem; }
+    #loginBtn:hover { background: #142d3a; transform: translateY(-1px); }
+    #loginBtn:disabled { background: var(--border); color: var(--muted); cursor: not-allowed; transform: none; }
+    .pw-wrap { position: relative; }
+    .pw-wrap input { padding-right: 3rem; }
+    .eye-btn { position: absolute; right: .75rem; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 1.1rem; color: var(--muted); padding: 0; }
+    .back-link { display: block; text-align: center; margin-top: 1.5rem; color: rgba(255,255,255,0.5); font-size: 0.85rem; text-decoration: none; }
+    .back-link:hover { color: var(--lime); }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+  </style>
+</head>
+<body>
+
+<div class="login-wrap">
+  <div class="login-header">
+    <div class="icon">🔐</div>
+    <h1>Admin Panel</h1>
+    <p>ProGuides Store — Restricted Access</p>
+  </div>
+
+  <div class="card">
+    <div id="alertBox"></div>
+
+    <div class="field">
+      <label>Admin Email</label>
+      <input type="email" id="email" placeholder="admin@example.com" autocomplete="email"/>
+    </div>
+
+    <div class="field">
+      <label>Password</label>
+      <div class="pw-wrap">
+        <input type="password" id="password" placeholder="Enter admin password"/>
+        <button type="button" class="eye-btn" onclick="toggleEye()">👁</button>
+      </div>
+    </div>
+
+    <button id="loginBtn">Access Admin Panel</button>
+  </div>
+
+  <a href="index.html" class="back-link">← Back to Store</a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL  = 'https://jomsflisyeohejfrvxnf.supabase.co';
+  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpvbXNmbGlzeWVvaGVqZnJ2eG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2MTY5MTIsImV4cCI6MjA5NjE5MjkxMn0.qaC_PbEIfHJq4ae9gRJxcUV-fgwrXTMEldO6yj66KNY';
+  const ADMIN_EMAIL   = 'proguidesstore@gmail.com';
+
+  const { createClient } = supabase;
+  const db = createClient(SUPABASE_URL, SUPABASE_ANON);
+
+  // Redirect if already logged in as admin
+  db.auth.getSession().then(({ data: { session } }) => {
+    if (session && session.user.email === ADMIN_EMAIL) {
+      window.location.href = 'admin.html';
+    }
+  });
+
+  function toggleEye() {
+    const input = document.getElementById('password');
+    const btn = document.querySelector('.eye-btn');
+    input.type = input.type === 'password' ? 'text' : 'password';
+    btn.textContent = input.type === 'password' ? '👁' : '🙈';
+  }
+
+  function showAlert(msg, type = 'error') {
+    const box = document.getElementById('alertBox');
+    box.textContent = msg;
+    box.className = type;
+  }
+
+  document.getElementById('loginBtn').addEventListener('click', async () => {
+    const email    = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const btn      = document.getElementById('loginBtn');
+
+    if (!email)    { showAlert('Please enter your email.'); return; }
+    if (!password) { showAlert('Please enter your password.'); return; }
+
+    // Only allow admin email
+    if (email !== ADMIN_EMAIL) {
+      showAlert('Access denied. This panel is for administrators only.');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Authenticating…';
+
+    try {
+      const { data, error } = await db.auth.signInWithPassword({ email, password });
+
+      if (error) {
+        showAlert('Invalid credentials. Please try again.');
+        return;
+      }
+
+      if (data.user.email !== ADMIN_EMAIL) {
+        await db.auth.signOut();
+        showAlert('Access denied.');
+        return;
+      }
+
+      showAlert('✅ Access granted! Redirecting…', 'success');
+      setTimeout(() => { window.location.href = 'admin.html'; }, 1000);
+
+    } catch (err) {
+      showAlert('Something went wrong. Please try again.');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Access Admin Panel';
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') document.getElementById('loginBtn').click();
+  });
+</script>
+</body>
+</html>
+s
