@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vendor Dashboard — ProGuides Store</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --teal:    #1B3A4B;
+      --lime:    #A8D832;
+      --lav:     #C4B5F4;
+      --bg:      #F4F6F3;
+      --white:   #FFFFFF;
+      --muted:   #6B7A74;
+      --border:  #DDE3DD;
+      --danger:  #E05252;
+      --success: #2DB87A;
+    }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--teal); min-height: 100vh; }
+    nav { background: var(--teal); padding: 0 2rem; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+    .nav-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.2rem; color: var(--lime); text-decoration: none; }
+    .nav-logo span { color: var(--white); font-weight: 400; }
+    .nav-links { display: flex; gap: 1.5rem; align-items: center; }
+    .nav-links a { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.88rem; transition: color .2s; }
+    .nav-links a:hover { color: var(--lime); }
+    .nav-links a.active { color: var(--lime); font-weight: 600; }
+    #logoutBtn { background: transparent; border: 1px solid rgba(168,216,50,0.4); color: var(--lime); padding: .35rem .9rem; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-family: 'DM Sans', sans-serif; transition: all .2s; }
+    #logoutBtn:hover { background: var(--lime); color: var(--teal); }
+    .page-wrap { max-width: 1000px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+    .welcome-banner { background: var(--teal); border-radius: 16px; padding: 1.5rem 2rem; margin-bottom: 1.75rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+    .welcome-banner h1 { font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800; color: var(--white); }
+    .welcome-banner p { color: rgba(255,255,255,0.6); font-size: 0.88rem; margin-top: .25rem; }
+    .welcome-banner .store-badge { background: rgba(168,216,50,0.15); border: 1px solid rgba(168,216,50,0.3); color: var(--lime); padding: .4rem 1rem; border-radius: 20px; font-size: 0.82rem; font-weight: 600; }
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.75rem; }
+    .stat-card { background: var(--white); border-radius: 14px; padding: 1.25rem 1.5rem; border: 1px solid var(--border); }
+    .stat-card .stat-icon { font-size: 1.3rem; margin-bottom: .5rem; }
+    .stat-card .stat-value { font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 800; color: var(--teal); }
+    .stat-card .stat-label { font-size: 0.78rem; color: var(--muted); margin-top: .2rem; }
+    .card { background: var(--white); border-radius: 16px; padding: 1.5rem; border: 1px solid var(--border); margin-bottom: 1.5rem; }
+    .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; padding-bottom: .75rem; border-bottom: 2px solid var(--bg); }
+    .card-title { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; display: flex; align-items: center; gap: .5rem; }
+    .card-title .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--lime); display: inline-block; }
+    .card-link { font-size: 0.82rem; color: var(--muted); text-decoration: none; }
+    .card-link:hover { color: var(--teal); }
+    .actions-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+    .action-btn { background: var(--bg); border: 1.5px solid var(--border); border-radius: 12px; padding: 1.25rem 1rem; text-align: center; cursor: pointer; text-decoration: none; color: var(--teal); transition: all .2s; display: block; }
+    .action-btn:hover { border-color: var(--lime); background: rgba(168,216,50,0.05); transform: translateY(-2px); }
+    .action-btn .action-icon { font-size: 1.5rem; margin-bottom: .5rem; display: block; }
+    .action-btn .action-label { font-size: 0.82rem; font-weight: 600; display: block; }
+    .action-btn .action-desc { font-size: 0.75rem; color: var(--muted); margin-top: .2rem; display: block; }
+    .orders-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    .orders-table th { text-align: left; padding: .6rem .75rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); border-bottom: 2px solid var(--bg); }
+    .orders-table td { padding: .75rem; border-bottom: 1px solid var(--bg); }
+    .orders-table tr:last-child td { border-bottom: none; }
+    .badge { padding: .2rem .6rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+    .badge.pending  { background: rgba(196,181,244,0.3); color: #6b5fa6; }
+    .badge.paid     { background: rgba(45,184,122,0.15); color: #1a7a52; }
+    .badge.shipped  { background: rgba(27,58,75,0.1); color: var(--teal); }
+    .products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+    .product-card { border: 1.5px solid var(--border); border-radius: 12px; overflow: hidden; transition: border-color .2s; }
+    .product-card:hover { border-color: var(--lime); }
+    .product-img { width: 100%; height: 140px; object-fit: cover; background: var(--bg); display: flex; align-items: center; justify-content: center; font-size: 2rem; color: var(--muted); }
+    .product-img img { width: 100%; height: 100%; object-fit: cover; }
+    .product-info { padding: .85rem; }
+    .product-name { font-family: 'Syne', sans-serif; font-size: 0.88rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .product-price { color: var(--teal); font-weight: 600; font-size: 0.9rem; margin-top: .2rem; }
+    .product-status { margin-top: .4rem; }
+    .empty { text-align: center; padding: 2.5rem 1rem; color: var(--muted); }
+    .empty .empty-icon { font-size: 2.5rem; margin-bottom: .75rem; display: block; }
+    .empty p { font-size: 0.9rem; }
+    .btn-lime { background: var(--lime); color: var(--teal); border: none; border-radius: 10px; padding: .5rem 1.25rem; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.88rem; cursor: pointer; text-decoration: none; display: inline-block; transition: all .2s; }
+    .btn-lime:hover { background: #96c42a; }
+    /* Loading screen */
+    #loadingScreen { position: fixed; inset: 0; background: var(--teal); display: flex; align-items: center; justify-content: center; z-index: 999; }
+    #loadingScreen .logo { font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 800; color: var(--lime); }
+    #loadingScreen .logo span { color: #fff; font-weight: 400; }
+    #mainContent { display: none; }
+    @media (max-width: 768px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } .actions-grid { grid-template-columns: repeat(2, 1fr); } .products-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 480px) { .products-grid { grid-template-columns: 1fr 1fr; } }
+  </style>
+</head>
+<body>
+
+<!-- Loading screen while auth check runs -->
+<div id="loadingScreen">
+  <div class="logo">ProGuides<span> Store</span></div>
+</div>
+
+<div id="mainContent">
+  <nav>
+    <a class="nav-logo" href="../index.html">ProGuides<span> Store</span></a>
+    <div class="nav-links">
+      <a href="dashboard.html" class="active">Dashboard</a>
+      <a href="upload.html">Upload</a>
+      <button id="logoutBtn">Logout</button>
+    </div>
+  </nav>
+
+  <div class="page-wrap">
+    <!-- WELCOME -->
+    <div class="welcome-banner">
+      <div>
+        <h1>Welcome back, <span id="vendorName">Vendor</span>! 👋</h1>
+        <p>Here's what's happening with your store today.</p>
+      </div>
+      <div class="store-badge" id="storeName">Loading...</div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">💰</div>
+        <div class="stat-value" id="totalRevenue">₦0</div>
+        <div class="stat-label">Total Revenue</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📦</div>
+        <div class="stat-value" id="totalOrders">0</div>
+        <div class="stat-label">Total Orders</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🛍️</div>
+        <div class="stat-value" id="totalProducts">0</div>
+        <div class="stat-label">Products Listed</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">⏳</div>
+        <div class="stat-value" id="pendingOrders">0</div>
+        <div class="stat-label">Pending Orders</div>
+      </div>
+    </div>
+
+    <!-- QUICK ACTIONS -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><span class="dot"></span> Quick Actions</div>
+      </div>
+      <div class="actions-grid">
+        <a href="upload.html" class="action-btn">
+          <span class="action-icon">➕</span>
+          <span class="action-label">Add Product</span>
+          <span class="action-desc">Upload photos, set price</span>
+        </a>
+        <a href="#products" class="action-btn">
+          <span class="action-icon">🛍️</span>
+          <span class="action-label">My Products</span>
+          <span class="action-desc">Edit or remove listings</span>
+        </a>
+        <a href="#orders" class="action-btn">
+          <span class="action-icon">📦</span>
+          <span class="action-label">View Orders</span>
+          <span class="action-desc">Track & update orders</span>
+        </a>
+        <a href="https://wa.me/2348107761250" target="_blank" class="action-btn">
+          <span class="action-icon">💬</span>
+          <span class="action-label">WhatsApp Support</span>
+          <span class="action-desc">Contact ProGuides team</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- RECENT ORDERS -->
+    <div class="card" id="orders">
+      <div class="card-header">
+        <div class="card-title"><span class="dot"></span> Recent Orders</div>
+        <a href="#" class="card-link">View all →</a>
+      </div>
+      <div id="ordersContent">
+        <div class="empty">
+          <span class="empty-icon">📭</span>
+          <p>No orders yet. Orders from customers will appear here.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- MY PRODUCTS -->
+    <div class="card" id="products">
+      <div class="card-header">
+        <div class="card-title"><span class="dot"></span> My Products</div>
+        <a href="upload.html" class="btn-lime">+ Add product</a>
+      </div>
+      <div id="productsContent">
+        <div class="empty">
+          <span class="empty-icon">🛍️</span>
+          <p>No products yet. Add your first product to start selling.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL  = 'https://jomsflisyeohejfrvxnf.supabase.co';
+  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpvbXNmbGlzeWVvaGVqZnJ2eG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2MTY5MTIsImV4cCI6MjA5NjE5MjkxMn0.qaC_PbEIfHJq4ae9gRJxcUV-fgwrXTMEldO6yj66KNY';
+  const ADMIN_EMAIL   = 'proguidesstore@gmail.com';
+
+  const { createClient } = supabase;
+  const db = createClient(SUPABASE_URL, SUPABASE_ANON);
+
+  let vendor = null;
+
+  // ── AUTH CHECK ─────────────────────────────────────────
+  async function checkAuth() {
+    const { data: { session } } = await db.auth.getSession();
+
+    if (!session) {
+      window.location.href = 'login.html';
+      return;
+    }
+
+    // Block admin from vendor dashboard
+    if (session.user.email === ADMIN_EMAIL) {
+      window.location.href = '../admin.html';
+      return;
+    }
+
+    // Load vendor profile
+    const { data, error } = await db
+      .from('vendors')
+      .select('*')
+      .eq('user_id', session.user.id)
+      .single();
+
+    if (error || !data) {
+      await db.auth.signOut();
+      window.location.href = 'login.html';
+      return;
+    }
+
+    if (!data.is_approved) {
+      await db.auth.signOut();
+      window.location.href = 'login.html';
+      return;
+    }
+
+    vendor = data;
+    localStorage.setItem('proguides_vendor', JSON.stringify(vendor));
+
+    // Show page
+    document.getElementById('loadingScreen').style.display = 'none';
+    document.getElementById('mainContent').style.display = 'block';
+
+    // Populate UI
+    document.getElementById('vendorName').textContent = vendor.full_name || vendor.email;
+    document.getElementById('storeName').textContent  = vendor.store_name || 'My Store';
+
+    // Load data
+    await Promise.all([loadProducts(), loadOrders()]);
+  }
+
+  // ── LOGOUT ─────────────────────────────────────────────
+  document.getElementById('logoutBtn').addEventListener('click', async () => {
+    await db.auth.signOut();
+    localStorage.removeItem('proguides_vendor');
+    window.location.href = 'login.html';
+  });
+
+  // ── LOAD PRODUCTS ──────────────────────────────────────
+  async function loadProducts() {
+    const { data, error } = await db
+      .from('products')
+      .select('*')
+      .eq('vendor_id', vendor.id)
+      .order('created_at', { ascending: false });
+
+    if (error) { console.error('Products error:', error); return; }
+
+    document.getElementById('totalProducts').textContent = data ? data.length : 0;
+    if (!data || data.length === 0) return;
+
+    const grid = document.createElement('div');
+    grid.className = 'products-grid';
+
+    data.forEach(p => {
+      const card = document.createElement('div');
+      card.className = 'product-card';
+      const img = p.images && p.images.length > 0
+        ? `<div class="product-img"><img src="${p.images[0]}" alt="${p.name}"/></div>`
+        : `<div class="product-img">🛍️</div>`;
+      const statusColor = p.status === 'approved' ? 'paid' : p.status === 'pending' ? 'pending' : 'shipped';
+      card.innerHTML = `
+        ${img}
+        <div class="product-info">
+          <div class="product-name">${p.name}</div>
+          <div class="product-price">₦${Number(p.price).toLocaleString()}</div>
+          <div class="product-status"><span class="badge ${statusColor}">${p.status || 'pending'}</span></div>
+        </div>`;
+      grid.appendChild(card);
+    });
+
+    document.getElementById('productsContent').innerHTML = '';
+    document.getElementById('productsContent').appendChild(grid);
+  }
+
+  // ── LOAD ORDERS ────────────────────────────────────────
+  async function loadOrders() {
+    const { data, error } = await db
+      .from('orders')
+      .select('*')
+      .eq('vendor_id', vendor.id)
+      .order('created_at', { ascending: false })
+      .limit(10);
+
+    if (error) { console.error('Orders error:', error); return; }
+
+    const total   = data ? data.length : 0;
+    const pending = data ? data.filter(o => o.order_status === 'pending').length : 0;
+    const revenue = data ? data.filter(o => o.payment_status === 'paid').reduce((s, o) => s + (o.total || 0), 0) : 0;
+
+    document.getElementById('totalOrders').textContent   = total;
+    document.getElementById('pendingOrders').textContent = pending;
+    document.getElementById('totalRevenue').textContent  = `₦${Number(revenue).toLocaleString()}`;
+
+    if (!data || data.length === 0) return;
+
+    const table = `
+      <table class="orders-table">
+        <thead>
+          <tr>
+            <th>Order Ref</th>
+            <th>Customer</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${data.map(o => `
+            <tr>
+              <td>#${o.order_number || o.id?.toString().slice(0,8)}</td>
+              <td>${o.buyer_name || '—'}</td>
+              <td>₦${Number(o.total || 0).toLocaleString()}</td>
+              <td><span class="badge ${o.order_status || 'pending'}">${o.order_status || 'pending'}</span></td>
+              <td>${new Date(o.created_at).toLocaleDateString('en-NG')}</td>
+            </tr>`).join('')}
+        </tbody>
+      </table>`;
+
+    document.getElementById('ordersContent').innerHTML = table;
+  }
+
+  // ── INIT ───────────────────────────────────────────────
+  checkAuth();
+</script>
+</body>
+</html>
